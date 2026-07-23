@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-var timeSet = {};
-var dataSet = {};
+final timeSet = List.empty(growable: true);
+final dataSet = List.empty(growable: true);
 
 //double _currentSliderValue = 20;
-double _currentDiscreteSliderValue = 6;
+double _currentDiscreteSliderValue = 5;
 
 void main() {
   runApp(const MainApp());
@@ -20,7 +20,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'cicadas',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 230, 4))
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
       ),
       home: MyHomePage(),
     );
@@ -40,10 +40,18 @@ class MyHomePage extends StatelessWidget {
                'Rate your energy level out of 10',
                 style: TextStyle(
                   fontSize: 20,
-                  color: const Color.fromARGB(255, 255, 176, 7)
+                  color: const Color.fromARGB(255, 230, 195, 0),
                 )
               ),
-              NumberSlide()
+              NumberSlide(),
+              IconButton(
+                icon: const Icon(Icons.check),
+                onPressed: (){
+                  dataSet.add(_currentDiscreteSliderValue);
+                  timeSet.add(DateTime.now());
+                },
+                color: Color.fromARGB(255, 255, 217, 0),
+              ),
           ]
         ),
       )
