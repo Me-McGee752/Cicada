@@ -36,8 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text("Cicada"),
-          backgroundColor: Colors.green,
-          foregroundColor: Colors.white,
+          backgroundColor: Colors.amber,
+          foregroundColor: const Color.fromARGB(255, 255, 224, 132),
           actions: [
             // To refreah the Data stored in Hive
             IconButton(
