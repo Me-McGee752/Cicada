@@ -18,7 +18,7 @@ class MainApp extends StatelessWidget {
    @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'cicadas',
+      title: 'cicadas butt',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 230, 4))
       ),
