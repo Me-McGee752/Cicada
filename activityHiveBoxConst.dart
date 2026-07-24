@@ -1,1 +1,1 @@
-const String userHiveBox="User Box";
+const String activityHiveBox="Activity Box";
