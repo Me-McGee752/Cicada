@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:cicada/cicadaDataHiveBoxConst.dart';
 import 'package:cicada/cicadaDataHiveFunctions.dart';
+import 'dart:developer' as developer;
 
 final timeSet = List.empty(growable: true);
 final dataSet = List.empty(growable: true);
@@ -18,12 +19,12 @@ Future<void> main() async {
 
   // Open the Hive box to store items
 
-  runApp(const MainApp());
+  runApp(const CicadaDataApp());
 }
 
-class MainApp extends StatelessWidget {
+class CicadaDataApp extends StatelessWidget {
   
-  const MainApp({super.key});
+  const CicadaDataApp({super.key});
     
    @override
   Widget build(BuildContext context) {
@@ -32,20 +33,20 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
       ),
-      home: MyHomePage(),
+      home: CicadaDataScreen(),
     );
   }
 }
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class CicadaDataScreen extends StatefulWidget {
+  const CicadaDataScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<CicadaDataScreen> createState() => _CicadaDataScreenState();
 }
-class _MyHomePageState extends State<MyHomePage> {
+class _CicadaDataScreenState extends State<CicadaDataScreen> {
   List myHiveData = [];
   void getHiveData() {
-    myHiveData = HiveFunctions.getAllEnergyPoints();
+    myHiveData = CicadaDataHiveFunctions.getAllEnergyPoints();
     setState(() {});
   }
   @override
@@ -75,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: (){
                   dataSet.add(_currentDiscreteSliderValue);
                   timeSet.add(DateTime.now());
-                  HiveFunctions.createEnergyPoint({
+                  CicadaDataHiveFunctions.createEnergyPoint({
                     "energy": _currentDiscreteSliderValue,
                     "time": DateTime.now().toString(),
                   });
