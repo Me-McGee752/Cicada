@@ -19,7 +19,7 @@ Future<void> main() async {
   // Initialize Hive for Flutter
   await Hive.initFlutter();
   await Hive.openBox(energyPointHiveBox);
-  await Hive.openBox(userHiveBox);
+  await Hive.openBox(activityHiveBox);
   // Open the Hive box to store items
 
   runApp(const Navigator());
