@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:cicada/Hive_functions.dart';
+import 'package:cicada/activityHiveFunctions.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class ActivityScreen extends StatefulWidget {
+  const ActivityScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ActivityScreen> createState() => _ActivityScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ActivityScreenState extends State<ActivityScreen> {
   // Local Variable Where we save
   // the hive data of current context
   List myHiveData = [];
@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // To Update the data from Hive in local variable
   void getHiveData() {
-    myHiveData = HiveFunctions.getAllUsers();
+    myHiveData = ActivityHiveFunctions.getAllActivities();
     setState(() {});
   }
   @override
@@ -36,8 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text("Cicada"),
-          backgroundColor: Colors.amber,
-          foregroundColor: const Color.fromARGB(255, 255, 224, 132),
+          backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
           actions: [
             // To refreah the Data stored in Hive
             IconButton(
@@ -58,18 +58,18 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Column(
           children: 
             List.generate(myHiveData.length, (index) {
-              final userData = myHiveData[index];
-              print("Activity: ${userData["activity"]}, Priority: ${userData["priority"]} newPriority: ${userData["newPriority"]}");
+              final activityData = myHiveData[index];
+              print("Activity: ${activityData["activity"]}, Priority: ${activityData["priority"]} newPriority: ${activityData["newPriority"]}");
               return Card(
                 child: ListTile(
                   title: //Show Name of user stored in data base
-                      Text("Activity : ${userData["activity"]}"),
+                      Text("Activity : ${activityData["activity"]}"),
                     subtitle: //Show Email of user stored in data base
                       Column(
                         children: [
-                          Text("Priority : ${userData["priority"]}"),
+                          Text("Priority : ${activityData["priority"]}"),
                           const SizedBox(width: 10),
-                          Text("New Priority : ${userData["newPriority"]}"),
+                          Text("New Priority : ${activityData["newPriority"]}"),
                         ],
                       ),
                     trailing: Row(
@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 // To edit the data stored
                         IconButton(
                           onPressed: () {
-                            showForm(userData["key"]);
+                            showForm(activityData["key"]);
                           },
                           icon: const Icon(Icons.edit),
                         ),
@@ -152,12 +152,15 @@ void showForm(int? itemKey) async {
                     divisions: 10,
                     label: _currentDiscreteSliderValue.round().toString(),
                   ),
+                  const SizedBox(
+                    height: 200,
+                  ),
                   ElevatedButton(
                     onPressed: () async {
                       // Save new item
                       if (itemKey == null) {
                         print("newPriority: ${_currentDiscreteSliderValue.round().toString()}");
-                        HiveFunctions.createActivity({
+                        ActivityHiveFunctions.createActivity({
                           "activity": _activityController.text,
                           "priority": _priorityController.text,
                           "newPriority": _currentDiscreteSliderValue.round()
@@ -166,7 +169,7 @@ void showForm(int? itemKey) async {
 
                       // update an existing item
                       if (itemKey != null) {
-                        HiveFunctions.updateActivity(itemKey, {
+                        ActivityHiveFunctions.updateActivity(itemKey, {
                           "activity": _activityController.text,
                           "priority": _priorityController.text,
                           "newPriority": _currentDiscreteSliderValue.round()
