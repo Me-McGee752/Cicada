@@ -1,19 +1,19 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:cicada/Hive_box_const.dart';
+import 'package:cicada/activityHiveBoxConst.dart';
 
-class HiveFunctions {
+class ActivityHiveFunctions {
   // Box which will use to store the things
-  static final userBox = Hive.box(userHiveBox);
+  static final activityBox = Hive.box(activityHiveBox);
   static void createActivity(Map data) {
-    userBox.add(data);
+    activityBox.add(data);
 }
 // Create or add multiple data in hive
-  static void addAllUser(List data) {
-    userBox.addAll(data);
+  static void addAllActivity(List data) {
+    activityBox.addAll(data);
 }
-  static List getAllUsers() {
-    final data = userBox.keys.map((key) {
-        final value = userBox.get(key);
+  static List getAllActivities() {
+    final data = activityBox.keys.map((key) {
+        final value = activityBox.get(key);
         return {"key": key, "activity": value["activity"], "length": value["length"], "priority": value['priority'], "newPriority": value['newPriority']};
     }).toList();
 
@@ -22,10 +22,10 @@ class HiveFunctions {
 
 // Get data for particular user in hive
   static Map getActivity(int key) {
-    return userBox.get(key);
+    return activityBox.get(key);
 }
 static updateActivity(int key, Map data) {
-    userBox.put(key, data);
+    activityBox.put(key, data);
   }
 
 }
