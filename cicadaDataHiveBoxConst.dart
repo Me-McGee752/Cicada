@@ -1,0 +1,1 @@
+const String energyPointHiveBox="Energy Point Box";
