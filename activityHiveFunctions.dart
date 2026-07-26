@@ -14,7 +14,7 @@ class ActivityHiveFunctions {
   static List getAllActivities() {
     final data = activityBox.keys.map((key) {
         final value = activityBox.get(key);
-        return {"key": key, "activity": value["activity"], "length": value["length"], "priority": value['priority'], "newPriority": value['newPriority']};
+        return {"key": key, "activity": value["activity"], "length": value["length"], "priority": value['priority']};
     }).toList();
 
     return data.reversed.toList();
