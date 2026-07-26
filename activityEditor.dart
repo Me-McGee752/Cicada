@@ -62,16 +62,12 @@ class _ActivityScreenState extends State<ActivityScreen> {
               print("Activity: ${activityData["activity"]}, Priority: ${activityData["priority"]} newPriority: ${activityData["newPriority"]}");
               return Card(
                 child: ListTile(
-                  title: //Show Name of user stored in data base
+                  title: 
+                    //Show Name of user stored in data base
+                      Column( children: [
                       Text("Activity : ${activityData["activity"]}"),
-                    subtitle: //Show Email of user stored in data base
-                      Column(
-                        children: [
-                          Text("Priority : ${activityData["priority"]}"),
-                          const SizedBox(width: 10),
-                          Text("New Priority : ${activityData["newPriority"]}"),
-                        ],
-                      ),
+                      Text("Priority : ${activityData["priority"]}"),  
+                      ]),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -102,7 +98,7 @@ void showForm(int? itemKey) async {
       final existingItem =
           myHiveData.firstWhere((element) => element['key'] == itemKey);
       _activityController.text = existingItem['activity'];
-      _priorityController.text = existingItem['priority'];
+      _currentDiscreteSliderValue = existingItem['priority'].toDouble();
     }
 
     showModalBottomSheet(
@@ -132,25 +128,24 @@ void showForm(int? itemKey) async {
                   const SizedBox(
                     height: 10,
                   ),
-                  TextField(
-                    controller: _priorityController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: 'Priority'),
-                  ),
                   const SizedBox(
                     height: 20,
                   ),
-                  Slider(
-                    value: _currentDiscreteSliderValue,
-                    onChanged: (double value) {
-                      setState(() {
-                        _currentDiscreteSliderValue = value;
-                      });
+                  StatefulBuilder(
+                    builder: (context, state) {
+                      return Slider(
+                        value: _currentDiscreteSliderValue,
+                        onChanged: (double value) {
+                          state(() {
+                            _currentDiscreteSliderValue = value;
+                          });
+                        },
+                        min: 0,
+                        max: 10,
+                        divisions: 10,
+                        label: _currentDiscreteSliderValue.round().toString()
+                      );
                     },
-                    min: 0,
-                    max: 10,
-                    divisions: 10,
-                    label: _currentDiscreteSliderValue.round().toString(),
                   ),
                   const SizedBox(
                     height: 200,
@@ -159,11 +154,10 @@ void showForm(int? itemKey) async {
                     onPressed: () async {
                       // Save new item
                       if (itemKey == null) {
-                        print("newPriority: ${_currentDiscreteSliderValue.round().toString()}");
+                        print("priority: ${_currentDiscreteSliderValue.round().toString()}");
                         ActivityHiveFunctions.createActivity({
                           "activity": _activityController.text,
-                          "priority": _priorityController.text,
-                          "newPriority": _currentDiscreteSliderValue.round()
+                          "priority": _currentDiscreteSliderValue.round()
                         });
                       }
 
@@ -171,8 +165,7 @@ void showForm(int? itemKey) async {
                       if (itemKey != null) {
                         ActivityHiveFunctions.updateActivity(itemKey, {
                           "activity": _activityController.text,
-                          "priority": _priorityController.text,
-                          "newPriority": _currentDiscreteSliderValue.round()
+                          "priority": _currentDiscreteSliderValue.round()
                         });
                       }
 
