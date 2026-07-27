@@ -1,7 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:cicada/cicadaDataHiveBoxConst.dart';
 
-class HiveFunctions {
+class CicadaDataHiveFunctions {
   // Box which will use to store the things
   static final energyPointBox = Hive.box(energyPointHiveBox);
   static void createEnergyPoint(Map data) {
