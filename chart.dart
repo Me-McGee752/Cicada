@@ -1,11 +1,21 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'cicadaDataHiveFunctions.dart';
+import 'cicadaDataHiveBoxConst.dart';
 
 void main() => runApp(const ChartScreen());
 
-class ChartScreen extends StatelessWidget {
+class ChartScreen extends StatefulWidget {
   const ChartScreen({super.key});
 
+  @override
+  State<ChartScreen> createState() => _ChartScreenState();
+}
+
+class _ChartScreenState extends State<ChartScreen> {  
+  
+  @override 
+  State<LineChart> createState() => _LineChart();
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -16,9 +26,25 @@ class ChartScreen extends StatelessWidget {
   }
 }
 
-class _LineChart extends StatelessWidget {
-  const _LineChart();
-
+class _LineChart extends State<LineChart> {
+  List energyPoints = [];
+  void getHiveData() {
+    energyPoints = CicadaDataHiveFunctions.getAllEnergyPoints();
+    setState(() {});
+  }
+  @override
+  void initState() {
+    super.initState();
+    getHiveData();
+  }
+  List dataSpots = [];
+  dynamic setUpList(){
+    energyPoints.forEach((var energyPoint) {
+      dataSpots.add(FlSpot(energyPoint["time"], energyPoint["energy"]));
+    }
+    );
+    return (dataSpots);
+  }
   @override
   Widget build(BuildContext context) {
     return LineChart(lineChartData);
@@ -170,8 +196,10 @@ class _LineChart extends StatelessWidget {
         lineChartBarDataCurrentWeek(),
  //       lineChartBarDataPreviousWeek(),
       ];
+  
 
   LineChartBarData lineChartBarDataCurrentWeek() => LineChartBarData(
+    
     isCurved: true,
     curveSmoothness: .2,
     color: Colors.amberAccent,
@@ -179,37 +207,39 @@ class _LineChart extends StatelessWidget {
     isStrokeCapRound: true,
     dotData: const FlDotData(show: true),
     belowBarData: BarAreaData(show: false),
-    spots: const [
-      FlSpot(0, 0),
-      FlSpot(1, 0),
-      FlSpot(2, 0),
-      FlSpot(3, 0),
-      FlSpot(4, 0),
-      FlSpot(5, 0),
-      FlSpot(6, 0),
-      FlSpot(7, 3),
-      FlSpot(8, 5),
-      FlSpot(9, 7),
-      FlSpot(10, 10),
-      FlSpot(11, 3),
-      FlSpot(12, 7),
-      FlSpot(13, 5),
-      FlSpot(14, 5),
-      FlSpot(15, 3),
-      FlSpot(16, 2),
-      FlSpot(17, 5),
-      FlSpot(18, 7),
-      FlSpot(19, 5),
-      FlSpot(20, 3),
-      FlSpot(21, 2),
-      FlSpot(22, 0),
-      FlSpot(23, 0),
-    ],
+    spots: setUpList() 
+    // const [
+      
+      // FlSpot(0, 0),
+      // FlSpot(1, 0),
+      // FlSpot(2, 0),
+      // FlSpot(3, 0),
+      // FlSpot(4, 0),
+      // FlSpot(5, 0),
+      // FlSpot(6, 0),
+      // FlSpot(7, 3),
+      // FlSpot(8, 5),
+      // FlSpot(9, 7),
+      // FlSpot(10, 10),
+      // FlSpot(11, 3),
+      // FlSpot(12, 7),
+      // FlSpot(13, 5),
+      // FlSpot(14, 5),
+      // FlSpot(15, 3),
+      // FlSpot(16, 2),
+      // FlSpot(17, 5),
+      // FlSpot(18, 7),
+      // FlSpot(19, 5),
+      // FlSpot(20, 3),
+      // FlSpot(21, 2),
+      // FlSpot(22, 0),
+      // FlSpot(23, 0),
+    //],
   );
 
 }
 
-class LineChartWidget extends StatelessWidget {
+class LineChartWidget extends StatelessWidget{
   const LineChartWidget({super.key});
 
   @override
