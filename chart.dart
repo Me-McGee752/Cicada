@@ -61,10 +61,15 @@ class _LineChart extends StatelessWidget {
   const _LineChart();
 
   
-  dynamic setUpList(){
-    for(var e in energyPoints){
-      return FlSpot(e["time"], e["energy"]);
+  List<FlSpot> setUpList() {
+    List<FlSpot> pointList = [];
+    for (var e in energyPoints) {
+      pointList.add(FlSpot(
+        (e['time'] as num).toDouble(),
+        (e['energy'] as num).toDouble(),
+      ));
     }
+    return pointList;
   }
   
   @override
@@ -228,8 +233,9 @@ class _LineChart extends StatelessWidget {
     isStrokeCapRound: true,
     dotData: const FlDotData(show: true),
     belowBarData: BarAreaData(show: false),
-    spots: 
-    energyPoints.isEmpty ? [FlSpot(0, 0)] : [setUpList()],
+    spots: energyPoints.isEmpty ? [FlSpot(0, 0)] : setUpList(),
+
+
     // const [
       
     //   FlSpot(0, 0),
