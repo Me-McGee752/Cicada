@@ -59,6 +59,11 @@ class _CicadaDataScreenState extends State<CicadaDataScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          title: const Text("Cicada Data"),
+          backgroundColor: Colors.amber,
+          foregroundColor: Colors.white,
+        ),
       body: Center(
         child: Column(
           mainAxisAlignment:MainAxisAlignment.center,
