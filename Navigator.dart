@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:cicada/activityHiveFunctions.dart';
-import 'package:cicada/activityHiveBoxConst.dart';
-import 'package:cicada/cicadaDataHiveBoxConst.dart';
-import 'package:cicada/cicadaDataHiveFunctions.dart';
-import 'package:cicada/activityEditor.dart';
-import 'package:cicada/cicadaData.dart';
-import 'package:cicada/todoList.dart';
-import 'package:cicada/chart.dart';
-
-
-
+import 'activityHiveFunctions.dart';
+import 'activityHiveBoxConst.dart';
+import 'cicadaDataHiveBoxConst.dart';
+//import 'cicadaDataHiveFunctions.dart';
+import 'activityEditor.dart';
+import 'cicadaData.dart';
+import 'todoList.dart';
+import 'chart.dart';
 
 
 Future<void> main() async {
@@ -50,6 +47,9 @@ class _NavigatorState extends State<Navigator> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
+      ),
       home: Scaffold(
         bottomNavigationBar: NavigationBar(
           onDestinationSelected: (int index) {
@@ -59,12 +59,12 @@ class _NavigatorState extends State<Navigator> {
           },
           destinations: [
           NavigationDestination(
-            icon: Icon(Icons.sports_handball),
-            label: 'Activities',
-          ),
-          NavigationDestination(
             icon: Icon(Icons.list),
             label: 'Todo List',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.sports_handball),
+            label: 'Activities',
           ),
           NavigationDestination(
             icon: Icon(Icons.battery_unknown),
@@ -80,8 +80,8 @@ class _NavigatorState extends State<Navigator> {
         body: IndexedStack(
           index: currentIndex,
           children: const [
-            ActivityScreen(),
             TodoListScreen(),
+            ActivityScreen(),
             CicadaDataScreen(),
             ChartScreen(),
           ],
