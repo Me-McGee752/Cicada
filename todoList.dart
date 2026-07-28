@@ -12,6 +12,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          title: const Text("Todo"),
+          backgroundColor: Colors.amber,
+          foregroundColor: Colors.white,
+        ),
         body: Center(
           child: Card(
             child: Padding(
