@@ -37,6 +37,9 @@ class _ChartScreenState extends State<ChartScreen> {
   @override
   Widget build(BuildContext context) {
     return  MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
+      ),
       home: Scaffold(
         appBar: AppBar(
           title: const Text("Circadium Rhythm"),
@@ -225,7 +228,8 @@ class _LineChart extends StatelessWidget {
     isStrokeCapRound: true,
     dotData: const FlDotData(show: true),
     belowBarData: BarAreaData(show: false),
-    spots: energyPoints.isEmpty ? [FlSpot(0, 0)] : setUpList(),
+    spots: 
+    energyPoints.isEmpty ? [FlSpot(0, 0)] : setUpList(),
     // const [
       
     //   FlSpot(0, 0),
@@ -269,23 +273,13 @@ class LineChartWidget extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color.fromARGB(255, 255, 237, 183),
+      //color: const Color.fromARGB(255, 255, 237, 183),
       child: const AspectRatio(
         aspectRatio: 1.25,
         child: Column(
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                'Circadium Rhythm',
-                style: TextStyle(
-                  color: Colors.amber,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                ),
-                textAlign: TextAlign.center,
-              ),
             ),
             Expanded(
               child: Padding(
