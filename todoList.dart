@@ -11,6 +11,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
+      ),
       home: Scaffold(
         appBar: AppBar(
           title: const Text("Todo"),
