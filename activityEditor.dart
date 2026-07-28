@@ -35,8 +35,8 @@ class _ActivityScreenState extends State<ActivityScreen> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text("Cicada"),
-          backgroundColor: Colors.green,
+          title: const Text("Activities"),
+          backgroundColor: Colors.amber,
           foregroundColor: Colors.white,
           actions: [
             // To refreah the Data stored in Hive
