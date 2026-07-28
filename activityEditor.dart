@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:cicada/activityHiveFunctions.dart';
+//import 'package:hive_flutter/hive_flutter.dart';
+import 'activityHiveFunctions.dart';
 
 class ActivityScreen extends StatefulWidget {
   const ActivityScreen({super.key});
@@ -33,6 +33,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
+      ),
       home: Scaffold(
         appBar: AppBar(
           title: const Text("Activities"),
