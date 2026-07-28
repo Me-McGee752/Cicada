@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:cicada/cicadaDataHiveBoxConst.dart';
-import 'package:cicada/cicadaDataHiveFunctions.dart';
-import 'dart:developer' as developer;
+import 'cicadaDataHiveBoxConst.dart';
+import 'cicadaDataHiveFunctions.dart';
+//import 'dart:developer' as developer;
 
 final timeSet = List.empty(growable: true);
 final dataSet = List.empty(growable: true);
@@ -83,7 +83,7 @@ class _CicadaDataScreenState extends State<CicadaDataScreen> {
                   timeSet.add(DateTime.now());
                   CicadaDataHiveFunctions.createEnergyPoint({
                     "energy": _currentDiscreteSliderValue,
-                    "time": DateTime.now().toString(),
+                    "time": DateTime.now().hour + (DateTime.now().minute/60)
                   });
                   
                 },
@@ -96,6 +96,8 @@ class _CicadaDataScreenState extends State<CicadaDataScreen> {
     );
   }
 }
+
+
 
 
 class NumberSlide extends StatefulWidget {
