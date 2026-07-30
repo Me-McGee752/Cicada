@@ -251,8 +251,20 @@ class _LineChart extends StatelessWidget {
 
   List<LineChartBarData> lineBarsData() => [
         averageData(),
- //       lineChartBarDataPreviousWeek(),
+        scatterFullData(),
       ];
+
+  LineChartBarData scatterFullData() => LineChartBarData(
+    isCurved: true,
+    curveSmoothness: 0,
+    color: const Color.fromARGB(255, 255, 166, 0),
+    barWidth: 0,
+    isStrokeCapRound: true,
+    dotData: const FlDotData(show: true),
+    belowBarData: BarAreaData(show: false),
+    spots: 
+    energyPoints.isEmpty ? [FlSpot(0, 0)] : setUpList(),
+  );
 
 
   LineChartBarData averageData() => LineChartBarData(
@@ -264,37 +276,7 @@ class _LineChart extends StatelessWidget {
     dotData: const FlDotData(show: true),
     belowBarData: BarAreaData(show: false),
     spots: 
-    //energyPoints.isEmpty ? [FlSpot(0, 0)] : setUpList(),
     energyPoints.isEmpty ? [FlSpot(0, 0)] : averageGraph(),
-
-
-    // const [
-      
-    //   FlSpot(0, 0),
-    //   FlSpot(1, 0),
-    //   FlSpot(2, 0),
-    //   FlSpot(3, 0),
-    //   FlSpot(4, 0),
-    //   FlSpot(5, 0),
-    //   FlSpot(6, 0),
-    //   FlSpot(7, 3),
-    //   FlSpot(8, 5),
-    //   FlSpot(9, 7),
-    //   FlSpot(20, 10),
-    //   FlSpot(11, 3),
-    //   FlSpot(12, 7),
-    //   FlSpot(13, 5),
-    //   FlSpot(14, 5),
-    //   FlSpot(15, 3),
-    //   FlSpot(16, 2),
-    //   FlSpot(17, 5),
-    //   FlSpot(18, 7),
-    //   FlSpot(19, 5),
-    //   FlSpot(20, 3),
-    //   FlSpot(21, 2),
-    //   FlSpot(22, 0),
-    //   FlSpot(23, 0),
-    // ],
   );
 }
 
