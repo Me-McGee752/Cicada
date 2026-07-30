@@ -4,6 +4,7 @@ import 'cicadaDataHiveFunctions.dart';
 //import 'cicadaDataHiveBoxConst.dart';
 
 List energyPoints = [];
+//List<FlSpot> averageList = [];
 
 void main() => runApp(const ChartScreen());
 
@@ -13,9 +14,6 @@ class ChartScreen extends StatefulWidget {
   @override
   State<ChartScreen> createState() => _ChartScreenState();
 }
-
-
-
 
 
 
@@ -60,6 +58,38 @@ class _ChartScreenState extends State<ChartScreen> {
 class _LineChart extends StatelessWidget {
   const _LineChart();
 
+
+  List<FlSpot> averageGraph(){
+    List<FlSpot> averageList = [];
+    for(int i = 0; i < 24; i++){
+      int temp = 0;
+      List<int> tempList = [];
+
+      for(var e in energyPoints){
+        if(e['time'].toInt() == i){
+          tempList.add(e['energy'].toInt());
+        }
+      }
+
+        if(tempList.isNotEmpty){
+          int averageDataPoint = 0;
+          
+          for(int y = 0; y < tempList.length; y++){
+            temp += tempList[y];
+          }
+
+          averageDataPoint = (temp/(tempList.length)).toInt();
+
+
+          averageList.add(FlSpot(
+            (i as num).toDouble(),
+            (averageDataPoint as num).toDouble(),
+          ));
+        }
+      }
+    return averageList;
+  }
+
   
   List<FlSpot> setUpList() {
     List<FlSpot> pointList = [];
@@ -94,16 +124,16 @@ class _LineChart extends StatelessWidget {
   );
 
   FlGridData gridData() => FlGridData(
-    show: false,
+    show: true,
     drawVerticalLine: true,
     horizontalInterval: 1,
     verticalInterval: 1,
     getDrawingHorizontalLine: (double _) => FlLine(
-      color: Colors.amber.withValues(),
+      color: const Color.fromARGB(255, 255, 230, 156).withValues(),
       strokeWidth: 1,
     ),
     getDrawingVerticalLine: (double _) => FlLine(
-      color: Colors.amber.withValues(),
+      color: const Color.fromARGB(255, 255, 230, 156).withValues(),
       strokeWidth: 1,
     ),
   );
@@ -220,20 +250,22 @@ class _LineChart extends StatelessWidget {
   );
 
   List<LineChartBarData> lineBarsData() => [
-        lineChartBarDataCurrentWeek(),
+        averageData(),
  //       lineChartBarDataPreviousWeek(),
       ];
-  
 
-  LineChartBarData lineChartBarDataCurrentWeek() => LineChartBarData(
+
+  LineChartBarData averageData() => LineChartBarData(
     isCurved: true,
     curveSmoothness: .2,
-    color: Colors.amberAccent,
+    color: Colors.amber,
     barWidth: 5,
     isStrokeCapRound: true,
     dotData: const FlDotData(show: true),
     belowBarData: BarAreaData(show: false),
-    spots: energyPoints.isEmpty ? [FlSpot(0, 0)] : setUpList(),
+    spots: 
+    //energyPoints.isEmpty ? [FlSpot(0, 0)] : setUpList(),
+    energyPoints.isEmpty ? [FlSpot(0, 0)] : averageGraph(),
 
 
     // const [
@@ -248,7 +280,7 @@ class _LineChart extends StatelessWidget {
     //   FlSpot(7, 3),
     //   FlSpot(8, 5),
     //   FlSpot(9, 7),
-    //   FlSpot(10, 10),
+    //   FlSpot(20, 10),
     //   FlSpot(11, 3),
     //   FlSpot(12, 7),
     //   FlSpot(13, 5),
@@ -265,12 +297,6 @@ class _LineChart extends StatelessWidget {
     // ],
   );
 }
-
-
-
-
-
-
 
 
 class LineChartWidget extends StatelessWidget{
