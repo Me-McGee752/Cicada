@@ -72,13 +72,13 @@ class _LineChart extends StatelessWidget {
       }
 
         if(tempList.isNotEmpty){
-          int averageDataPoint = 0;
+          double averageDataPoint = 0;
           
           for(int y = 0; y < tempList.length; y++){
             temp += tempList[y];
           }
 
-          averageDataPoint = (temp/(tempList.length)).toInt();
+          averageDataPoint = (temp/(tempList.length));
 
 
           averageList.add(FlSpot(
@@ -114,14 +114,14 @@ class _LineChart extends StatelessWidget {
     borderData: borderData(),
     lineBarsData: lineBarsData(),
     minX: 0,
-    maxX: 23,
+    maxX: 24,
     minY: 0,
     maxY: 10,
   );
 
-  LineTouchData lineTouchData() => const LineTouchData(
-    handleBuiltInTouches: true,
-  );
+  LineTouchData lineTouchData() => LineTouchData(
+      handleBuiltInTouches: true
+    );
 
   FlGridData gridData() => FlGridData(
     show: true,
@@ -254,17 +254,20 @@ class _LineChart extends StatelessWidget {
         scatterFullData(),
       ];
 
+
   LineChartBarData scatterFullData() => LineChartBarData(
     isCurved: true,
     curveSmoothness: 0,
     color: const Color.fromARGB(255, 255, 166, 0),
     barWidth: 0,
+    preventCurveOverShooting: true,
     isStrokeCapRound: true,
     dotData: const FlDotData(show: true),
     belowBarData: BarAreaData(show: false),
     spots: 
     energyPoints.isEmpty ? [FlSpot(0, 0)] : setUpList(),
   );
+  
 
 
   LineChartBarData averageData() => LineChartBarData(
@@ -272,6 +275,7 @@ class _LineChart extends StatelessWidget {
     curveSmoothness: .2,
     color: Colors.amber,
     barWidth: 5,
+    preventCurveOverShooting: true,
     isStrokeCapRound: true,
     dotData: const FlDotData(show: true),
     belowBarData: BarAreaData(show: false),
