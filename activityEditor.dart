@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 //import 'package:hive_flutter/hive_flutter.dart';
 import 'activityHiveFunctions.dart';
-import 'package:flutter/services.dart';
+import 'scheduledActivity.dart';
+
+// bool light = false;
 
 class ActivityScreen extends StatefulWidget {
   const ActivityScreen({super.key});
@@ -17,13 +19,14 @@ class _ActivityScreenState extends State<ActivityScreen> {
   double _currentDiscreteSliderValue = 5;
   // TextFields' controllers for adding  or updating data
   final TextEditingController _activityController = TextEditingController();
-  final TextEditingController _durationController = TextEditingController();
+  final TextEditingController _priorityController = TextEditingController();
 
   // To Update the data from Hive in local variable
   void getHiveData() {
     myHiveData = ActivityHiveFunctions.getAllActivities();
     setState(() {});
   }
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +34,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
     // when page is loading
     getHiveData();
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,34 +42,39 @@ class _ActivityScreenState extends State<ActivityScreen> {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
       ),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Activities"),
-          backgroundColor: Colors.amber,
-          foregroundColor: Colors.white,
-        ),
+        // appBar: AppBar(
+        //   title: const Text("Activities"),
+        //   backgroundColor: Colors.amber,
+        //   foregroundColor: Colors.white,
+        //   actions: [
+        //     // To refreah the Data stored in Hive
+        //     IconButton(
+        //       onPressed: () {
+        //         getHiveData();
+        //     },
+        //         icon: const Icon(Icons.refresh),
+        //       ),
+        //     ],
+        // ),
         floatingActionButton: FloatingActionButton.extended(
-          label: const Text("Add Activity"),
+          label: const Text("Add Data"),
           icon: const Icon(Icons.add),
           onPressed: () {
-            showForm(null);
+            activity(null);
           }
         ),
-        body: Container(
-          child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: 
+        body: Column(
+          children: 
             List.generate(myHiveData.length, (index) {
               final activityData = myHiveData[index];
-              //print("Activity: ${activityData["activity"]}, Priority: ${activityData["priority"]} newPriority: ${activityData["newPriority"]}");
+              print("Activity: ${activityData["activity"]}, Priority: ${activityData["priority"]} newPriority: ${activityData["newPriority"]}");
               return Card(
                 child: ListTile(
                   title: 
                     //Show Name of user stored in data base
                       Column( children: [
                       Text("Activity : ${activityData["activity"]}"),
-                      Text("Duration : ${activityData["duration"]}"),
-                      Text("Priority : ${activityData["priority"]}"),
+                      Text("Priority : ${activityData["priority"]}"),  
                       ]),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -73,7 +82,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                 // To edit the data stored
                         IconButton(
                           onPressed: () {
-                            showForm(activityData["key"]);
+                            activity(activityData["key"]);
                           },
                           icon: const Icon(Icons.edit),
                         ),
@@ -85,13 +94,10 @@ class _ActivityScreenState extends State<ActivityScreen> {
           ),
         ),
       ),
-    )
-      )
-  );
-
+    );
   }
 
-void showForm(int? itemKey) async {
+void activity(int? itemKey) async {
     // itemKey == null -> create new item
     // itemKey != null -> update an existing item
 
@@ -100,7 +106,6 @@ void showForm(int? itemKey) async {
       final existingItem =
           myHiveData.firstWhere((element) => element['key'] == itemKey);
       _activityController.text = existingItem['activity'];
-      _durationController.text = existingItem['duration'].toString();
       _currentDiscreteSliderValue = existingItem['priority'].toDouble();
     }
 
@@ -114,95 +119,118 @@ void showForm(int? itemKey) async {
                   top: 15,
                   left: 15,
                   right: 15),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                      child: Text(
-                    itemKey == null ? 'Create New Activity' : 'Update Activity',
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.w600),
-                  )),
-                  TextField(
-                    controller: _activityController,
-                    decoration: const InputDecoration(hintText: 'Activity'),
-                  ),
+              child: 
+                Column(
+                  //mainAxisSize: MainAxisSize.min,
+                  //crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                        child: Text(
+                      itemKey == null ? 'New Activity' : 'Update',
+                      style: const TextStyle(
+                        fontSize: 22, 
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black
+                        ),
+                      )
+                    ),
                   const SizedBox(
-                    height: 20,
+                    height: 10
                   ),
-                 TextField(
-                    controller: _durationController,
-                    decoration: const InputDecoration(hintText: 'Duration (minutes)'),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                  
-                  ),
-                  Center(
-                      child: Text(
-                    'Priority',
-                    style: const TextStyle(fontSize: 16),
-                  )),
-                  StatefulBuilder(
-                    builder: (context, state) {
-                      return Slider(
-                        value: _currentDiscreteSliderValue,
-                        onChanged: (double value) {
-                          state(() {
-                            _currentDiscreteSliderValue = value;
-                          });
-                        },
-                        min: 0,
-                        max: 10,
-                        divisions: 10,
-                        label: _currentDiscreteSliderValue.round().toString()
-                      );
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const SizedBox(
-                    height: 200,
-                  ),
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 20
+                        ),
+                        Text(
+                          'Activity Name:',
+                          style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black
+                          )
+                        ),
+                        TextField(
+                          controller: _activityController,
+                          decoration: const InputDecoration(
+                          hintText: 'Ex: Chemistry HW',
+                          hintStyle: TextStyle(
+                            color: Color.fromARGB(255, 194, 153, 8),
+                            fontSize: 15
+                            )
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                        Text(
+                          'Rate activity prority out of 10: ',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black
+                          )
+                        ),
+                        StatefulBuilder(
+                          builder: (context, state) {
+                            return Slider(
+                              value: _currentDiscreteSliderValue,
+                              onChanged: (double value) {
+                              state(() {
+                                _currentDiscreteSliderValue = value;
+                                });
+                              },
+                              min: 0,
+                              max: 10,
+                              divisions: 10,
+                              label: _currentDiscreteSliderValue.round().toString(),
+                              activeColor: Colors.amberAccent,
+                              thumbColor: Colors.amberAccent
+                            );
+                          },
+                        ),
+                        const SizedBox(
+                          height: 200,
+                        ),
+              ],
+            ),
+
                   ElevatedButton(
                     onPressed: () async {
-                      // Save new item
-                      if (itemKey == null) {
-                        // print("priority: ${_currentDiscreteSliderValue.round().toString()}");
-                        ActivityHiveFunctions.createActivity({
-                          "activity": _activityController.text,
-                          "duration": int.parse(_durationController.text),
-                          "priority": _currentDiscreteSliderValue.round()
+                    // Save new item
+                    if (itemKey == null) {
+                    print("priority: ${_currentDiscreteSliderValue.round().toString()}");
+                    ActivityHiveFunctions.createActivity({
+                      "activity": _activityController.text,
+                      "priority": _currentDiscreteSliderValue.round()
+                      });
+                    }
+
+                    // update an existing item
+                    if (itemKey != null) {
+                      ActivityHiveFunctions.updateActivity(itemKey, {
+                        "activity": _activityController.text,
+                        "priority": _currentDiscreteSliderValue.round()
                         });
                       }
 
-                      // update an existing item
-                      if (itemKey != null) {
-                        ActivityHiveFunctions.updateActivity(itemKey, {
-                          "activity": _activityController.text,
-                          "duration": int.parse(_durationController.text),
-                          "priority": _currentDiscreteSliderValue.round()
-                        });
-                      }
+                  // Clear the text fields
+                  _activityController.text = '';
+                  _priorityController.text = '';
+                  Navigator.of(context).pop(); // Close the bottom sheet
+                  // To refresh the Data stored in Hive after updation
+                    getHiveData();
+                  },
+                  child: Text(
+                              itemKey == null ? 'Create New' : 'Update',
+                              selectionColor: Color.fromARGB(255, 194, 153, 8)
 
-                      // Clear the text fields
-                      _activityController.text = '';
-                      _durationController.text = '';
-
-                      Navigator.of(context).pop(); // Close the bottom sheet
-                      // To refresh the Data stored in Hive after updation
-                      getHiveData();
-                    },
-                    child: Text(itemKey == null ? 'Create' : 'Update'),
                   ),
-                  const SizedBox(
-                    height: 15,
-                  )
+                ),
+                const SizedBox(
+                  height: 15,
+                )
                 ],
               ),
             ));
   }
-}
+  }
+
