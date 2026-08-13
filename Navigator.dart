@@ -4,7 +4,7 @@ import 'activityHiveFunctions.dart';
 import 'activityHiveBoxConst.dart';
 import 'cicadaDataHiveBoxConst.dart';
 //import 'cicadaDataHiveFunctions.dart';
-import 'activityEditor.dart';
+import 'activitiesPage.dart';
 import 'cicadaData.dart';
 import 'todoList.dart';
 import 'chart.dart';
@@ -12,13 +12,11 @@ import 'chart.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   // Initialize Hive for Flutter
   await Hive.initFlutter();
   await Hive.openBox(energyPointHiveBox);
   await Hive.openBox(activityHiveBox);
   // Open the Hive box to store items
-
   runApp(const Navigator());
 }
 
@@ -81,7 +79,7 @@ class _NavigatorState extends State<Navigator> {
           index: currentIndex,
           children: const [
             TodoListScreen(),
-            ActivityScreen(),
+            ActivitiesPage(),
             CicadaDataScreen(),
             ChartScreen(),
           ],
