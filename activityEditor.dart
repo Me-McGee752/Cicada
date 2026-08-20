@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 //import 'package:hive_flutter/hive_flutter.dart';
 import 'activityHiveFunctions.dart';
+import 'package:flutter/services.dart';
 import 'scheduledActivity.dart';
-
-// bool light = false;
-
 class ActivityScreen extends StatefulWidget {
   const ActivityScreen({super.key});
 
@@ -15,18 +13,20 @@ class ActivityScreen extends StatefulWidget {
 class _ActivityScreenState extends State<ActivityScreen> {
   // Local Variable Where we save
   // the hive data of current context
+  double size = 0;
   List myHiveData = [];
   double _currentDiscreteSliderValue = 5;
   // TextFields' controllers for adding  or updating data
   final TextEditingController _activityController = TextEditingController();
+  final TextEditingController _durationController = TextEditingController();
   final TextEditingController _priorityController = TextEditingController();
 
   // To Update the data from Hive in local variable
   void getHiveData() {
-    myHiveData = ActivityHiveFunctions.getAllActivities();
+    myHiveData = ActivityEditorHiveFunctions.getAllActivities();
     setState(() {});
   }
-
+  
   @override
   void initState() {
     super.initState();
@@ -46,15 +46,13 @@ class _ActivityScreenState extends State<ActivityScreen> {
         //   title: const Text("Activities"),
         //   backgroundColor: Colors.amber,
         //   foregroundColor: Colors.white,
-        //   actions: [
-        //     // To refreah the Data stored in Hive
-        //     IconButton(
-        //       onPressed: () {
-        //         getHiveData();
-        //     },
-        //         icon: const Icon(Icons.refresh),
-        //       ),
-        //     ],
+        // ),
+        // floatingActionButton: FloatingActionButton.extended(
+        //   label: const Text("Add Activity"),
+        //   icon: const Icon(Icons.add),
+        //   onPressed: () {
+        //     showForm(null);
+        //   }
         // ),
         floatingActionButton: FloatingActionButton.extended(
           label: const Text("Add Data"),
@@ -63,18 +61,46 @@ class _ActivityScreenState extends State<ActivityScreen> {
             activity(null);
           }
         ),
-        body: Column(
-          children: 
+        body: Container(
+          child: SingleChildScrollView(
+          child: Column(
+            
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: 
             List.generate(myHiveData.length, (index) {
               final activityData = myHiveData[index];
-              print("Activity: ${activityData["activity"]}, Priority: ${activityData["priority"]} newPriority: ${activityData["newPriority"]}");
-              return Card(
+              //print("Activity: ${activityData["activity"]}, Priority: ${activityData["priority"]} newPriority: ${activityData["newPriority"]}");
+              return Dismissible(
+                direction: DismissDirection.endToStart,
+                onUpdate: (details) {
+                  setState(() {
+                    size = details.progress;
+                  });
+                },
+                background: Card(
+                  color: Colors.red,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                        child: Icon(Icons.delete, color: Colors.white, size: 40),
+                    ),
+                  ),
+                ),
+              
+                onDismissed: (direction) {
+                  ActivityEditorHiveFunctions.activityBox.delete(activityData["key"]);
+                  getHiveData();
+                },
+                key: Key(activityData["key"].toString()),
+                child: Card(
                 child: ListTile(
                   title: 
                     //Show Name of user stored in data base
                       Column( children: [
                       Text("Activity : ${activityData["activity"]}"),
-                      Text("Priority : ${activityData["priority"]}"),  
+                      Text("Duration : ${activityData["duration"]}"),
+                      Text("Priority : ${activityData["priority"]}"),
                       ]),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -83,18 +109,24 @@ class _ActivityScreenState extends State<ActivityScreen> {
                         IconButton(
                           onPressed: () {
                             activity(activityData["key"]);
+
                           },
                           icon: const Icon(Icons.edit),
                         ),
                       ],
                     ),
                   ),
+                )
                 );
+            
             }
           ),
         ),
       ),
-    );
+    )
+      )
+  );
+
   }
 
 void activity(int? itemKey) async {
@@ -106,6 +138,7 @@ void activity(int? itemKey) async {
       final existingItem =
           myHiveData.firstWhere((element) => element['key'] == itemKey);
       _activityController.text = existingItem['activity'];
+      _durationController.text = existingItem['duration'].toString();
       _currentDiscreteSliderValue = existingItem['priority'].toDouble();
     }
 
@@ -119,25 +152,23 @@ void activity(int? itemKey) async {
                   top: 15,
                   left: 15,
                   right: 15),
-              child: 
-                Column(
-                  //mainAxisSize: MainAxisSize.min,
-                  //crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                        child: Text(
-                      itemKey == null ? 'New Activity' : 'Update',
-                      style: const TextStyle(
+              child: Column(
+                //mainAxisSize: MainAxisSize.min,
+                //crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                      child: Text(
+                    itemKey == null ? 'Create New Activity' : 'Update Activity',
+                    style: const TextStyle(
                         fontSize: 22, 
                         fontWeight: FontWeight.w600,
                         color: Colors.black
-                        ),
-                      )
-                    ),
+                       ),
+                  )),
                   const SizedBox(
                     height: 10
                   ),
-                  Column(
+                   Column(
                     children: [
                       const SizedBox(
                         height: 20
@@ -169,68 +200,78 @@ void activity(int? itemKey) async {
                             color: Colors.black
                           )
                         ),
-                        StatefulBuilder(
-                          builder: (context, state) {
-                            return Slider(
-                              value: _currentDiscreteSliderValue,
-                              onChanged: (double value) {
-                              state(() {
-                                _currentDiscreteSliderValue = value;
-                                });
-                              },
-                              min: 0,
-                              max: 10,
-                              divisions: 10,
-                              label: _currentDiscreteSliderValue.round().toString(),
-                              activeColor: Colors.amberAccent,
-                              thumbColor: Colors.amberAccent
-                            );
-                          },
-                        ),
-                        const SizedBox(
-                          height: 200,
-                        ),
-              ],
-            ),
-
+                 TextField(
+                    controller: _durationController,
+                    decoration: const InputDecoration(hintText: 'Duration (minutes)'),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                  
+                  ),
+                  Center(
+                      child: Text(
+                    'Priority',
+                    style: const TextStyle(fontSize: 16),
+                  )),
+                  StatefulBuilder(
+                    builder: (context, state) {
+                      return Slider(
+                        value: _currentDiscreteSliderValue,
+                        onChanged: (double value) {
+                          state(() {
+                            _currentDiscreteSliderValue = value;
+                          });
+                        },
+                        min: 0,
+                        max: 10,
+                        divisions: 10,
+                        label: _currentDiscreteSliderValue.round().toString()
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    height: 100,
+                   
+                  ),
+                    ],
+                           ),
                   ElevatedButton(
                     onPressed: () async {
-                    // Save new item
-                    if (itemKey == null) {
-                    print("priority: ${_currentDiscreteSliderValue.round().toString()}");
-                    ActivityHiveFunctions.createActivity({
-                      "activity": _activityController.text,
-                      "priority": _currentDiscreteSliderValue.round()
-                      });
-                    }
-
-                    // update an existing item
-                    if (itemKey != null) {
-                      ActivityHiveFunctions.updateActivity(itemKey, {
-                        "activity": _activityController.text,
-                        "priority": _currentDiscreteSliderValue.round()
+                      // Save new item
+                      if (itemKey == null) {
+                        // print("priority: ${_currentDiscreteSliderValue.round().toString()}");
+                        ActivityEditorHiveFunctions.createActivity({
+                          "activity": _activityController.text,
+                          "duration": int.parse(_durationController.text),
+                          "priority": _currentDiscreteSliderValue.round()
                         });
                       }
 
-                  // Clear the text fields
-                  _activityController.text = '';
-                  _priorityController.text = '';
-                  Navigator.of(context).pop(); // Close the bottom sheet
-                  // To refresh the Data stored in Hive after updation
-                    getHiveData();
-                  },
-                  child: Text(
-                              itemKey == null ? 'Create New' : 'Update',
-                              selectionColor: Color.fromARGB(255, 194, 153, 8)
+                      // update an existing item
+                      if (itemKey != null) {
+                        ActivityEditorHiveFunctions.updateActivity(itemKey, {
+                          "activity": _activityController.text,
+                          "duration": int.parse(_durationController.text),
+                          "priority": _currentDiscreteSliderValue.round()
+                        });
+                      }
 
+                      // Clear the text fields
+                      _activityController.text = '';
+                      _durationController.text = '';
+
+                      Navigator.of(context).pop(); // Close the bottom sheet
+                      // To refresh the Data stored in Hive after updation
+                      getHiveData();
+                    },
+                    child: Text(itemKey == null ? 'Create' : 'Update'),
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
-                )
+                  const SizedBox(
+                    height: 15,
+                  )
                 ],
               ),
             ));
   }
-  }
-
+}
