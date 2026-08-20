@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:hive_flutter/hive_flutter.dart';
 import 'activityHiveFunctions.dart';
 import 'activityEditor.dart';
+import 'scheduledActivity.dart';
 
 class ActivitiesPage extends StatelessWidget {
   const ActivitiesPage({super.key});
@@ -40,9 +41,9 @@ class ActivitiesPageTab extends StatelessWidget {
           )
         ),
         body: TabBarView(
-          children:<Widget>[
+          children: const[
             ActivityScreen(),
-            Center(child: Text('HELP ME!!!!'))
+            ScheduledActivityScreen()
           ]
         )
       )   
