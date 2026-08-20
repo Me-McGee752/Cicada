@@ -22,7 +22,7 @@ class _ScheduledActivityScreenState extends State<ScheduledActivityScreen> {
 
   // To Update the data from Hive in local variable
   void getHiveData() {
-    myHiveData = ActivityHiveFunctions.getAllActivities();
+    myHiveData = ScheduledActivityHiveFunctions.getAllActivities();
     setState(() {});
   }
 
@@ -41,20 +41,7 @@ class _ScheduledActivityScreenState extends State<ScheduledActivityScreen> {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
       ),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Activities"),
-          backgroundColor: Colors.amber,
-          foregroundColor: Colors.white,
-          actions: [
-            // To refreah the Data stored in Hive
-            IconButton(
-              onPressed: () {
-                getHiveData();
-            },
-                icon: const Icon(Icons.refresh),
-              ),
-            ],
-        ),
+        
         floatingActionButton: FloatingActionButton.extended(
           label: const Text("Add Data"),
           icon: const Icon(Icons.add),
@@ -66,14 +53,17 @@ class _ScheduledActivityScreenState extends State<ScheduledActivityScreen> {
           children: 
             List.generate(myHiveData.length, (index) {
               final scheduledActivityData = myHiveData[index];
-              print("Activity: ${scheduledActivityData["activity"]}, Priority: ${scheduledActivityData["priority"]} newPriority: ${scheduledActivityData["newPriority"]}");
+              print("Activity: ${scheduledActivityData["activity"]}, Day of Week: ${scheduledActivityData["dayOfWeek"]}, Repeatable: ${scheduledActivityData["repeatable"]}");
               return Card(
                 child: ListTile(
                   title: 
                     //Show Name of user stored in data base
                       Column( children: [
-                      Text("Activity : ${scheduledActivityData["activity"]}"),
-                      Text("Priority : ${scheduledActivityData["priority"]}"),  
+                      Text("Scheduled Activity : ${scheduledActivityData["activity"]}"),
+                      Text("Day of Week : ${scheduledActivityData["dayOfWeek"]}"),  
+                      //Text("Start Time : ${scheduledActivityData["startTime"]}"),
+                      //Text("End Time : ${scheduledActivityData["endTime"]}"),
+                      Text("Repeatable : ${scheduledActivityData["repeatable"]}"),
                       ]),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -107,7 +97,6 @@ void scheduledActivity(int? itemKey) async {
       final existingItem =
           myHiveData.firstWhere((element) => element['key'] == itemKey);
       _activityController.text = existingItem['activity'];
-      _currentDiscreteSliderValue = existingItem['priority'].toDouble();
     }
 
     showModalBottomSheet(
@@ -178,7 +167,7 @@ void scheduledActivity(int? itemKey) async {
                       const SizedBox (height: 50),
                       
                       const SizedBox(
-                        height: 500,
+                        height: 50,
                       )
                     ]
                   ),
@@ -188,17 +177,23 @@ void scheduledActivity(int? itemKey) async {
                     // Save new item
                     if (itemKey == null) {
                     print("priority: ${_currentDiscreteSliderValue.round().toString()}");
-                    ActivityHiveFunctions.createActivity({
+                    ScheduledActivityHiveFunctions.createActivity({
                       "activity": _activityController.text,
-                      "priority": _currentDiscreteSliderValue.round()
+                      "dayOfWeek": DropdownMenuWeek(),
+                      //"startTime": 
+                      //"endTime":
+                      "repeatable": light.toString(),
                       });
                     }
 
                     // update an existing item
                     if (itemKey != null) {
-                      ActivityHiveFunctions.updateActivity(itemKey, {
+                      ScheduledActivityHiveFunctions.updateActivity(itemKey, {
                         "activity": _activityController.text,
-                        "priority": _currentDiscreteSliderValue.round()
+                        "dayOfWeek": DropdownMenuWeek(),
+                        //"startTime":
+                        //"endTime":
+                        "repeatable": light.toString(),
                         });
                       }
 
