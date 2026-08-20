@@ -4,34 +4,41 @@ import 'activityHiveFunctions.dart';
 import 'activityHiveBoxConst.dart';
 import 'cicadaDataHiveBoxConst.dart';
 //import 'cicadaDataHiveFunctions.dart';
-import 'activitiesPage.dart';
+import 'activityEditor.dart';//change to activityPage.dart
 import 'cicadaData.dart';
 import 'todoList.dart';
 import 'chart.dart';
+import 'activityPage.dart';
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   // Initialize Hive for Flutter
   await Hive.initFlutter();
   await Hive.openBox(energyPointHiveBox);
-  await Hive.openBox(activityHiveBox);
+  await Hive.openBox(activityEditorHiveBox);
+  await Hive.openBox(scheduledActivityHiveBox);
   // Open the Hive box to store items
-  runApp(const Navigator());
+
+  runApp(const Navigator(currentIndex: 0));
 }
 
 
 class Navigator extends StatefulWidget {
-  const Navigator({super.key});
+  final int currentIndex;
+  const Navigator({super.key, required this.currentIndex});
 
   @override
-  State<Navigator> createState() => _NavigatorState();
+  State<Navigator> createState() => _NavigatorState(this.currentIndex);
 }
 
 class _NavigatorState extends State<Navigator> {
+  int currentIndex;
+  _NavigatorState(this.currentIndex);
   List myHiveData = [];
   void getHiveData() {
-    myHiveData = ActivityHiveFunctions.getAllActivities();
+    myHiveData = ActivityEditorHiveFunctions.getAllActivities();
     setState(() {});
   }
   @override
@@ -41,7 +48,6 @@ class _NavigatorState extends State<Navigator> {
     // when page is loading
     getHiveData();
   }
-  int currentIndex = 1;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -68,10 +74,11 @@ class _NavigatorState extends State<Navigator> {
             icon: Icon(Icons.battery_unknown),
             label: 'Cicada Data',
           ),
-          NavigationDestination(
-            icon: Icon(Icons.timeline),
-            label: 'Chart',
-          ),
+          // NavigationDestination(
+          //   icon: Icon(Icons.timeline),
+          //   label: 'Chart',
+            
+          // ),
         ],
         selectedIndex: currentIndex,
         ),
@@ -81,7 +88,7 @@ class _NavigatorState extends State<Navigator> {
             TodoListScreen(),
             ActivitiesPage(),
             CicadaDataScreen(),
-            ChartScreen(),
+            //ChartScreen(),
           ],
         )
       )   
