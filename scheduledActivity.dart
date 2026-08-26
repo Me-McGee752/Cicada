@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'activityHiveFunctions.dart';
 
 bool light = false;
+double startTime = 0;
+double endTime = 0;
 
 class ScheduledActivityScreen extends StatefulWidget {
   const ScheduledActivityScreen({super.key});
@@ -163,9 +165,41 @@ void scheduledActivity(int? itemKey) async {
                       const SizedBox(
                         height: 50,
                       ),
+                      Text(
+                        'Pick which day of the week:',
+                        style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                        )
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       DropdownMenuWeek(),
-                      const SizedBox (height: 50),
-                      
+                      const SizedBox (
+                        height: 50
+                        ),
+                      Text(
+                        'Enter start time and end time:',
+                        style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                        )
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TimePickerStart(),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          TimePickerEnd(),
+                        ]
+                      ),
                       const SizedBox(
                         height: 50,
                       )
@@ -191,8 +225,8 @@ void scheduledActivity(int? itemKey) async {
                       ScheduledActivityHiveFunctions.updateActivity(itemKey, {
                         "activity": _activityController.text,
                         "dayOfWeek": DropdownMenuWeek(),
-                        //"startTime":
-                        //"endTime":
+                        "startTime": startTime,
+                        "endTime": endTime,
                         "repeatable": light.toString(),
                         });
                       }
@@ -205,8 +239,8 @@ void scheduledActivity(int? itemKey) async {
                     getHiveData();
                   },
                   child: Text(
-                              itemKey == null ? 'Create New' : 'Update',
-                              selectionColor: Color.fromARGB(255, 194, 153, 8)
+                    itemKey == null ? 'Submit' : 'Update',
+                    selectionColor: Color.fromARGB(255, 194, 153, 8)
 
                   ),
                 ),
@@ -217,10 +251,7 @@ void scheduledActivity(int? itemKey) async {
               ),
             ));
   }
-
-
-
-  }
+}
 
 
 
@@ -293,4 +324,84 @@ class _DropdownMenuWeekState extends State<DropdownMenuWeek> {
         },
       );
   }
+}
+
+class TimePickerStart extends StatefulWidget {
+  @override
+  State<TimePickerStart> createState() => _TimePickerState();
+}
+
+class _TimePickerState extends State<TimePickerStart> {
+  String? _selectedTimeStart;
+ 
+ Future<void> _show() async {
+  final TimeOfDay? result = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+
+  if(result != null){
+    setState((){
+      _selectedTimeStart = result.format(context);
+      startTime = result.hour + (result.minute/100);
+    });
+  }
+ }
+
+ @override
+ Widget build(BuildContext context) {
+  return 
+  // Scaffold(
+  //   body: Center(
+  //     child: Text(
+  //       _selectedTime != null ? _selectedTime! : 'Pick Time',
+  //     ),
+  //   ),
+  //   floatingActionButton: 
+    TextButton(
+      onPressed: _show, //child: const Text('Picker'),
+      child: 
+      Text(
+        _selectedTimeStart != null ? _selectedTimeStart! : 'Start Time'
+      ),
+    );
+ }
+}
+
+
+class TimePickerEnd extends StatefulWidget {
+  @override
+  State<TimePickerEnd> createState() => _TimePickerStateEnd();
+}
+
+class _TimePickerStateEnd extends State<TimePickerEnd> {
+  String? _selectedTimeEnd;
+  
+ 
+ Future<void> _show() async {
+  final TimeOfDay? result = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+
+  if(result != null){
+    setState((){
+      _selectedTimeEnd = result.format(context);
+      endTime = result.hour + (result.minute/100);
+    });
+  }
+ }
+
+ @override
+ Widget build(BuildContext context) {
+  return 
+  // Scaffold(
+  //   body: Center(
+  //     child: Text(
+  //       _selectedTime != null ? _selectedTime! : 'Pick Time',
+  //     ),
+  //   ),
+  //   floatingActionButton: 
+    TextButton(
+      onPressed: _show, //child: const Text('Picker'),
+      child: 
+      Text(
+        _selectedTimeEnd != null ? _selectedTimeEnd! : 'End Time'
+      ),
+    );
+ }
 }
