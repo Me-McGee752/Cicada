@@ -200,20 +200,20 @@ void activity(int? itemKey) async {
                             color: Colors.black
                           )
                         ),
-                 TextField(
-                    controller: _durationController,
-                    decoration: const InputDecoration(hintText: 'Duration (minutes)'),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
+                //  TextField(
+                //     controller: _durationController,
+                //     decoration: const InputDecoration(hintText: 'Duration (minutes)'),
+                //     keyboardType: TextInputType.number,
+                //     inputFormatters: <TextInputFormatter>[
+                //       FilteringTextInputFormatter.digitsOnly
+                //     ],
                   
-                  ),
-                  Center(
-                      child: Text(
-                    'Priority',
-                    style: const TextStyle(fontSize: 16),
-                  )),
+                  //),
+                  //Center(
+                  //     child: Text(
+                  //   'Priority',
+                  //   style: const TextStyle(fontSize: 16),
+                  // )),
                   StatefulBuilder(
                     builder: (context, state) {
                       return Slider(
@@ -231,7 +231,7 @@ void activity(int? itemKey) async {
                     },
                   ),
                   const SizedBox(
-                    height: 100,
+                    height: 20,
                    
                   ),
                     ],
@@ -265,7 +265,7 @@ void activity(int? itemKey) async {
                       // To refresh the Data stored in Hive after updation
                       getHiveData();
                     },
-                    child: Text(itemKey == null ? 'Create' : 'Update'),
+                    child: Text(itemKey == null ? 'Submit' : 'Update'),
                   ),
                   const SizedBox(
                     height: 15,
