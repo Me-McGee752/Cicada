@@ -46,7 +46,7 @@ class ScheduledActivityHiveFunctions {
   static List getAllActivities() {
     final data = ScheduledActivityBox.keys.map((key) {
         final value = ScheduledActivityBox.get(key);
-        return {"key": key, "activity": value["activity"], "dayOfWeek": value["dayOfWeek"], "startTime": DateTime.parse(value['startTime']), "endTime": DateTime.parse(value['endTime']), "repeatable": bool.fromEnvironment(value['repeatable'])};
+        return {"key": key, "activity": value["activity"], "dayOfWeek": value["dayOfWeek"], "startTime": value['startTime'], "endTime": value['endTime'], "repeatable": value['repeatable']};
     }).toList();
 
     return data.reversed.toList();
