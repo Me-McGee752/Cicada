@@ -5,7 +5,7 @@ import 'activityHiveFunctions.dart';
 bool light = false;
 double startTime = 0;
 double endTime = 0;
-
+String dropdownvalue = "Sunday";
 class ScheduledActivityScreen extends StatefulWidget {
   const ScheduledActivityScreen({super.key});
 
@@ -105,7 +105,9 @@ void scheduledActivity(int? itemKey) async {
         context: context,
         elevation: 5,
         isScrollControlled: true,
-        builder: (_) => Container(
+        builder: (_) => SingleChildScrollView(
+          child: 
+              Container(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                   top: 15,
@@ -144,7 +146,7 @@ void scheduledActivity(int? itemKey) async {
                   children:[
                     const SizedBox(
                       height: 30
-                      ),
+                    ),
                       Text(
                         'Activity Name:',
                         style: TextStyle(
@@ -210,13 +212,13 @@ void scheduledActivity(int? itemKey) async {
                     onPressed: () async {
                     // Save new item
                     if (itemKey == null) {
-                    print("priority: ${_currentDiscreteSliderValue.round().toString()}");
+                    print("priority: ${light.toString()}");
                     ScheduledActivityHiveFunctions.createActivity({
                       "activity": _activityController.text,
-                      "dayOfWeek": DropdownMenuWeek(),
-                      //"startTime": 
-                      //"endTime":
-                      "repeatable": light.toString(),
+                      "dayOfWeek": dropdownvalue,
+                      "startTime": startTime,
+                      "endTime": endTime,
+                      "repeatable": light,
                       });
                     }
 
@@ -249,7 +251,10 @@ void scheduledActivity(int? itemKey) async {
                 )
                 ],
               ),
-            ));
+            )
+          )
+        );
+    
   }
 }
 
