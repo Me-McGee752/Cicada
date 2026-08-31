@@ -4,11 +4,11 @@ import 'activityHiveFunctions.dart';
 import 'activityHiveBoxConst.dart';
 import 'cicadaDataHiveBoxConst.dart';
 //import 'cicadaDataHiveFunctions.dart';
-import 'activityEditor.dart';//change to activityPage.dart
+//import 'activityEditor.dart';//change to activityPage.dart
 import 'cicadaData.dart';
 import 'todoList.dart';
-import 'chart.dart';
-import 'activityPage.dart';
+//import 'chart.dart';
+import 'activitiesPage.dart';
 
 
 Future<void> main() async {
@@ -21,21 +21,21 @@ Future<void> main() async {
   await Hive.openBox(scheduledActivityHiveBox);
   // Open the Hive box to store items
 
-  runApp(const Navigator(currentIndex: 0));
+  runApp(const NavigatorPage(currentIndex: 0));
 }
 
 
-class Navigator extends StatefulWidget {
+class NavigatorPage extends StatefulWidget {
   final int currentIndex;
-  const Navigator({super.key, required this.currentIndex});
+  const NavigatorPage({super.key, required this.currentIndex});
 
   @override
-  State<Navigator> createState() => _NavigatorState(this.currentIndex);
+  State<NavigatorPage> createState() => _NavigatorPageState(this.currentIndex);
 }
 
-class _NavigatorState extends State<Navigator> {
+class _NavigatorPageState extends State<NavigatorPage> {
   int currentIndex;
-  _NavigatorState(this.currentIndex);
+  _NavigatorPageState(this.currentIndex);
   List myHiveData = [];
   void getHiveData() {
     myHiveData = ActivityEditorHiveFunctions.getAllActivities();
