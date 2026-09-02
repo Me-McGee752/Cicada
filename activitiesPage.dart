@@ -41,7 +41,7 @@ class ActivitiesPageTab extends StatelessWidget {
           )
         ),
         body: TabBarView(
-          children: const[
+          children:<Widget>[
             ActivityScreen(),
             ScheduledActivityScreen()
           ]
