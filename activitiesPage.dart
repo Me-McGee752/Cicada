@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 //import 'package:hive_flutter/hive_flutter.dart';
-import 'activityHiveFunctions.dart';
+//import 'activityHiveFunctions.dart';
 import 'activityEditor.dart';
 import 'scheduledActivity.dart';
 
@@ -33,7 +33,8 @@ class ActivitiesPageTab extends StatelessWidget {
           bottom: TabBar(
             tabs: <Widget>[
               Tab(
-                text: "Activities"),
+                text: "Activities"
+              ),
               Tab(
                 text: "Scheduled Activites"
               ),
@@ -41,7 +42,7 @@ class ActivitiesPageTab extends StatelessWidget {
           )
         ),
         body: TabBarView(
-          children:<Widget>[
+          children: const[
             ActivityScreen(),
             ScheduledActivityScreen()
           ]
