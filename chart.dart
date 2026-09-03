@@ -34,19 +34,24 @@ class _ChartScreenState extends State<ChartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Circadium Rhythm"),
-          backgroundColor: Colors.amber,
-          foregroundColor: Colors.white,
-        ),
-        body: Center(child: LineChartWidget()),
-      ),
-    );
+    return  
+    //MaterialApp(
+      // theme: ThemeData(
+      //   colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
+      // ),
+      // home: 
+      //Scaffold(
+        // appBar: AppBar(
+        //   title: const Text("Circadium Rhythm"),
+        //   backgroundColor: Colors.amber,
+        //   foregroundColor: Colors.white,
+        // ),
+        //body: 
+        Center(child: 
+        LineChartWidget(),
+        );
+      //);
+    //);
   }
 }
 
@@ -264,8 +269,8 @@ class _LineChart extends StatelessWidget {
     isStrokeCapRound: true,
     dotData: const FlDotData(show: true),
     belowBarData: BarAreaData(show: false),
-    spots: 
-    energyPoints.isEmpty ? [FlSpot(0, 0)] : setUpList(),
+    spots: setUpList()
+    //energyPoints.isEmpty ? [FlSpot(0, 0)] : setUpList(),
   );
   
 
@@ -279,20 +284,22 @@ class _LineChart extends StatelessWidget {
     isStrokeCapRound: true,
     dotData: const FlDotData(show: true),
     belowBarData: BarAreaData(show: false),
-    spots: 
-    energyPoints.isEmpty ? [FlSpot(0, 0)] : averageGraph(),
+    spots: averageGraph()
+    //energyPoints.isEmpty ? [FlSpot(0, 0)] : averageGraph(),
   );
 }
 
+class LineChartWidget extends StatefulWidget{
+  @override
+  State<LineChartWidget> createState() => _LineChartWidgetState(); 
+}
 
-class LineChartWidget extends StatelessWidget{
-  const LineChartWidget({super.key});
-
+class _LineChartWidgetState extends State<LineChartWidget>{
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return //Container(
       //color: const Color.fromARGB(255, 255, 237, 183),
-      child: const AspectRatio(
+       const AspectRatio(
         aspectRatio: 1.25,
         child: Column(
           children: [
@@ -302,12 +309,13 @@ class LineChartWidget extends StatelessWidget{
             Expanded(
               child: Padding(
                 padding: EdgeInsets.only(right: 25, left: 2.5, bottom: 10),
-                child: _LineChart(),
+                child:
+                 _LineChart(),
               ),
             ),
           ],
         ),
-      ),
-    );
+      );
+    //);
   }
 }
