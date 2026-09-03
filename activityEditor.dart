@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:hive_flutter/hive_flutter.dart';
 import 'activityHiveFunctions.dart';
 import 'package:flutter/services.dart';
-import 'scheduledActivity.dart';
+//import 'scheduledActivity.dart';
 class ActivityScreen extends StatefulWidget {
   const ActivityScreen({super.key});
 
@@ -153,8 +153,8 @@ void activity(int? itemKey) async {
                   left: 15,
                   right: 15),
               child: Column(
-                //mainAxisSize: MainAxisSize.min,
-                //crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
                       child: Text(
@@ -168,8 +168,9 @@ void activity(int? itemKey) async {
                   const SizedBox(
                     height: 10
                   ),
-                   Column(
-                    children: [
+                  Column(
+
+                     children: [
                       const SizedBox(
                         height: 20
                         ),
@@ -200,20 +201,6 @@ void activity(int? itemKey) async {
                             color: Colors.black
                           )
                         ),
-                //  TextField(
-                //     controller: _durationController,
-                //     decoration: const InputDecoration(hintText: 'Duration (minutes)'),
-                //     keyboardType: TextInputType.number,
-                //     inputFormatters: <TextInputFormatter>[
-                //       FilteringTextInputFormatter.digitsOnly
-                //     ],
-                  
-                  //),
-                  //Center(
-                  //     child: Text(
-                  //   'Priority',
-                  //   style: const TextStyle(fontSize: 16),
-                  // )),
                   StatefulBuilder(
                     builder: (context, state) {
                       return Slider(
@@ -226,14 +213,35 @@ void activity(int? itemKey) async {
                         min: 0,
                         max: 10,
                         divisions: 10,
-                        label: _currentDiscreteSliderValue.round().toString()
+                        label: _currentDiscreteSliderValue.round().toString(),
+                        activeColor: Colors.amber,
+                        inactiveColor: Colors.amber,
                       );
                     },
                   ),
                   const SizedBox(
                     height: 20,
-                   
                   ),
+                  Center(
+                    child: Text(
+                    'Duration(minutes):',
+                    style: const TextStyle(fontSize: 20),
+                  )
+                  
+                  ),
+                  TextField(
+                    controller: _durationController,
+                    decoration: const InputDecoration(hintText: 'Ex: 30'),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                  
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  
                     ],
                            ),
                   ElevatedButton(
