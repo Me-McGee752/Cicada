@@ -58,7 +58,8 @@ class _CicadaDataScreenState extends State<CicadaDataScreen> {
           foregroundColor: Colors.white,
         ),
       body: 
-      Column(
+      SingleChildScrollView(
+        child: Column(
         children: <Widget> [
           SizedBox(
             height: 30
@@ -90,7 +91,7 @@ class _CicadaDataScreenState extends State<CicadaDataScreen> {
               ),
         ]
       )
-      
+      )
     );
   }
 }
