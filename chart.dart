@@ -55,23 +55,14 @@ class _ChartScreenState extends State<ChartScreen> {
   }
 }
 
-
-
-
-
-
-class _LineChart extends StatelessWidget {
-  const _LineChart();
-
-
-  List<FlSpot> averageGraph(){
+List<FlSpot> averageGraph(){
     List<FlSpot> averageList = [];
     for(int i = 0; i < 24; i++){
       int temp = 0;
       List<int> tempList = [];
 
       for(var e in energyPoints){
-        if(e['time'].toInt() == i){
+        if((e['time']+0.5).toInt() == i){
           tempList.add(e['energy'].toInt());
         }
       }
@@ -94,6 +85,15 @@ class _LineChart extends StatelessWidget {
       }
     return averageList;
   }
+
+
+
+
+class _LineChart extends StatelessWidget {
+  const _LineChart();
+
+
+  
 
   
   List<FlSpot> setUpList() {
