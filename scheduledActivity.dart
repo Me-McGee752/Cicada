@@ -56,7 +56,28 @@ class _ScheduledActivityScreenState extends State<ScheduledActivityScreen> {
             List.generate(myHiveData.length, (index) {
               final scheduledActivityData = myHiveData[index];
               print("Activity: ${scheduledActivityData["activity"]}, Day of Week: ${scheduledActivityData["dayOfWeek"]}, Repeatable: ${scheduledActivityData["repeatable"]}");
-              return Card(
+              return Dismissible(
+                direction: DismissDirection.endToStart,
+                onDismissed: (direction) {
+                  ScheduledActivityHiveFunctions.ScheduledActivityBox.delete(scheduledActivityData["key"]);
+                  getHiveData();
+                },
+                 onUpdate: (details) {
+                  setState(() {
+                  });
+                },
+                background: Card(
+                  color: Colors.red,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                        child: Icon(Icons.delete, color: Colors.white, size: 40),
+                    ),
+                  ),
+                ),
+                key: Key(scheduledActivityData["key"].toString()),
+              child: Card(
                 child: ListTile(
                   title: 
                     //Show Name of user stored in data base
@@ -80,7 +101,8 @@ class _ScheduledActivityScreenState extends State<ScheduledActivityScreen> {
                       ],
                     ),
                   ),
-                );
+                )
+              );
             }
           ),
         ),
