@@ -6,6 +6,7 @@ bool light = false;
 double startTime = 0;
 double endTime = 0;
 String dropdownvalue = "Sunday";
+
 class ScheduledActivityScreen extends StatefulWidget {
   const ScheduledActivityScreen({super.key});
 
@@ -17,7 +18,7 @@ class _ScheduledActivityScreenState extends State<ScheduledActivityScreen> {
   // Local Variable Where we save
   // the hive data of current context
   List myHiveData = [];
-  double _currentDiscreteSliderValue = 5;
+  //double _currentDiscreteSliderValue = 5;
   // TextFields' controllers for adding  or updating data
   final TextEditingController _activityController = TextEditingController();
   final TextEditingController _priorityController = TextEditingController();
@@ -56,37 +57,23 @@ class _ScheduledActivityScreenState extends State<ScheduledActivityScreen> {
             List.generate(myHiveData.length, (index) {
               final scheduledActivityData = myHiveData[index];
               print("Activity: ${scheduledActivityData["activity"]}, Day of Week: ${scheduledActivityData["dayOfWeek"]}, Repeatable: ${scheduledActivityData["repeatable"]}");
-              return Dismissible(
-                direction: DismissDirection.endToStart,
-                onDismissed: (direction) {
-                  ScheduledActivityHiveFunctions.ScheduledActivityBox.delete(scheduledActivityData["key"]);
-                  getHiveData();
-                },
-                 onUpdate: (details) {
-                  setState(() {
-                  });
-                },
-                background: Card(
-                  color: Colors.red,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15),
-                        child: Icon(Icons.delete, color: Colors.white, size: 40),
-                    ),
-                  ),
-                ),
-                key: Key(scheduledActivityData["key"].toString()),
-              child: Card(
+              return Card(
                 child: ListTile(
                   title: 
                     //Show Name of user stored in data base
                       Column( children: [
                       Text("Scheduled Activity : ${scheduledActivityData["activity"]}"),
                       Text("Day of Week : ${scheduledActivityData["dayOfWeek"]}"),  
-                      //Text("Start Time : ${scheduledActivityData["startTime"]}"),
-                      //Text("End Time : ${scheduledActivityData["endTime"]}"),
-                      Text("Repeatable : ${scheduledActivityData["repeatable"]}"),
+                      // Center(
+                      //   child: 
+                      // Row(
+                      //   children: [
+
+                      Text("Start Time : ${scheduledActivityData["startTime"]}"),
+                      Text("End Time : ${scheduledActivityData["endTime"]}"),
+                      // ])
+                      // )
+                      //Text("Repeatable : ${scheduledActivityData["repeatable"]}"),
                       ]),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -101,8 +88,7 @@ class _ScheduledActivityScreenState extends State<ScheduledActivityScreen> {
                       ],
                     ),
                   ),
-                )
-              );
+                );
             }
           ),
         ),
@@ -248,7 +234,7 @@ void scheduledActivity(int? itemKey) async {
                     if (itemKey != null) {
                       ScheduledActivityHiveFunctions.updateActivity(itemKey, {
                         "activity": _activityController.text,
-                        "dayOfWeek": DropdownMenuWeek(),
+                        "dayOfWeek": dropdownvalue,
                         "startTime": startTime,
                         "endTime": endTime,
                         "repeatable": light.toString(),
@@ -314,7 +300,7 @@ class DropdownMenuWeek extends StatefulWidget {
 }
 
 class _DropdownMenuWeekState extends State<DropdownMenuWeek> {
-  String dropdownvalue = 'Sunday';
+  //String dropdownvalue = 'Sunday';
 
   // List of items in our dropdown menu
   var items = [
@@ -360,6 +346,7 @@ class TimePickerStart extends StatefulWidget {
 
 class _TimePickerState extends State<TimePickerStart> {
   String? _selectedTimeStart;
+  TimePickerEntryMode initalEntryMode = TimePickerEntryMode.inputOnly;
  
  Future<void> _show() async {
   final TimeOfDay? result = await showTimePicker(context: context, initialTime: TimeOfDay.now());
@@ -396,10 +383,12 @@ class _TimePickerState extends State<TimePickerStart> {
 class TimePickerEnd extends StatefulWidget {
   @override
   State<TimePickerEnd> createState() => _TimePickerStateEnd();
+  
 }
 
 class _TimePickerStateEnd extends State<TimePickerEnd> {
   String? _selectedTimeEnd;
+  TimePickerEntryMode initalEntryMode = TimePickerEntryMode.inputOnly;
   
  
  Future<void> _show() async {
