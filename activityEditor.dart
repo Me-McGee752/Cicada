@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'activityHiveFunctions.dart';
 import 'package:flutter/services.dart';
 //import 'scheduledActivity.dart';
+
+int dropdownvalue = 60;
+
 class ActivityScreen extends StatefulWidget {
   const ActivityScreen({super.key});
 
@@ -229,15 +232,16 @@ void activity(int? itemKey) async {
                   )
                   
                   ),
-                  TextField(
-                    controller: _durationController,
-                    decoration: const InputDecoration(hintText: 'Ex: 30'),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
+                  DropdownMenuTime(),
+                  // TextField(
+                  //   controller: _durationController,
+                  //   decoration: const InputDecoration(hintText: 'Ex: 30'),
+                  //   keyboardType: TextInputType.number,
+                  //   inputFormatters: <TextInputFormatter>[
+                  //     FilteringTextInputFormatter.digitsOnly
+                  //   ],
                   
-                  ),
+                  // ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -251,7 +255,7 @@ void activity(int? itemKey) async {
                         // print("priority: ${_currentDiscreteSliderValue.round().toString()}");
                         ActivityEditorHiveFunctions.createActivity({
                           "activity": _activityController.text,
-                          "duration": int.parse(_durationController.text),
+                          "duration": dropdownvalue,
                           "priority": _currentDiscreteSliderValue.round()
                         });
                       }
@@ -260,7 +264,7 @@ void activity(int? itemKey) async {
                       if (itemKey != null) {
                         ActivityEditorHiveFunctions.updateActivity(itemKey, {
                           "activity": _activityController.text,
-                          "duration": int.parse(_durationController.text),
+                          "duration": dropdownvalue,
                           "priority": _currentDiscreteSliderValue.round()
                         });
                       }
@@ -281,5 +285,50 @@ void activity(int? itemKey) async {
                 ],
               ),
             ));
+  }
+}
+
+class DropdownMenuTime extends StatefulWidget {
+  const DropdownMenuTime({super.key});
+
+  @override
+  State<DropdownMenuTime> createState() => _DropdownMenuTimeState();
+}
+
+class _DropdownMenuTimeState extends State<DropdownMenuTime> {
+  //String dropdownvalue = 'Sunday';
+
+  // List of items in our dropdown menu
+  var items = [
+      30,
+      45,
+      60,
+      90,
+      120,
+  ];
+  
+  @override
+  Widget build(BuildContext context) {
+    return 
+      DropdownButton(
+          // Initial Value
+        value: dropdownvalue,
+
+          // Down Arrow Icon
+        icon: const Icon(Icons.keyboard_arrow_down),
+
+          // Array list of items
+        items:
+            items.map((int items) {
+              return DropdownMenuItem(value: items, child: Text(items.toString()));
+            }).toList(),
+          // After selecting the desired option,it will
+          // change button value to selected value
+        onChanged: (int? newValue) {
+          setState(() {
+            dropdownvalue = newValue!;
+          });
+        },
+      );
   }
 }
