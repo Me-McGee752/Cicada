@@ -61,3 +61,31 @@ static updateActivity(int key, Map data) {
   }
 
 }
+
+class SleepTimeHiveFunctions{
+  static final SleepTimesBox = Hive.box(sleepTimesHiveBox);
+  static void createActivity(Map data) {
+    SleepTimesBox.add(data);
+}
+// Create or add multiple data in hive
+  static void addAllActivity(List data) {
+    SleepTimesBox.addAll(data);
+}
+  static List getAllActivities() {
+    final data = SleepTimesBox.keys.map((key) {
+        final value = SleepTimesBox.get(key);
+        return {"key": value["key"], "wakeUpTime": value["wakeUpTime"], "sleepTime": value["sleepTime"]};
+    }).toList();
+
+    return data.reversed.toList();
+}
+
+// Get data for particular user in hive
+  static Map getActivity(int key) {
+    return SleepTimesBox.get(key);
+}
+static updateActivity(int key, Map data) {
+    SleepTimesBox.put(key, data);
+  }
+
+}
