@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
-import 'cicadaDataHiveBoxConst.dart';
+//import 'cicadaDataHiveBoxConst.dart';
 import 'activityHiveFunctions.dart';
-import 'activityHiveBoxConst.dart';
+//import 'activityHiveBoxConst.dart';
 import 'chart.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'NavigatorPage.dart';
+
+double startTime = 0;
+double endTime = 0;
+List todoList = [];
+List studyActivities = [];
+List scheduledActivities = [];
+//List sortList = [];
+
 class TodoListPage extends StatefulWidget {
   const TodoListPage({super.key});
 
@@ -12,10 +21,12 @@ class TodoListPage extends StatefulWidget {
 }
 
 class _TodoListPageState extends State<TodoListPage> {
-  List myHiveData = [];
+  //List myHiveData = [];
   List<FlSpot> average = averageGraph();
   void getHiveData() {
-    myHiveData = ActivityEditorHiveFunctions.getAllActivities();
+    studyActivities = ActivityEditorHiveFunctions.getAllActivities();
+    scheduledActivities = ScheduledActivityHiveFunctions.getAllActivities();
+    todoList = TodoListHiveFunctions.getAllActivities();
     setState(() {});
   }
   
@@ -33,120 +44,256 @@ class _TodoListPageState extends State<TodoListPage> {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
       ),
       home: Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-          label: const Text("Add Data"),
-          icon: const Icon(Icons.add),
-          onPressed: () {
-            
-          }
-        ),
         appBar: AppBar(
           title: const Text("Todo"),
           backgroundColor: Colors.amber,
           foregroundColor: Colors.white,
+          
         ),
-        body: Center(
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  TodoList(),
-                ],
+        body: 
+        Column(
+        children: 
+  
+          
+        [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TimePickerStart(),
+              SizedBox(width: 20),
+              Text(
+                "to",
+                style: TextStyle(
+                  fontSize: 17,
+                  color: const Color.fromARGB(255, 148, 126, 0)
+                ),
+
               ),
-            ),
+              SizedBox(width:20),
+              TimePickerEnd(),
+              SizedBox(width: 20),
+              IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () {
+                  todoListGenerator();
+                },
+              )
+            ] 
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class TodoList extends StatelessWidget {
-  const TodoList({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const TodoListScreen();
-  }
-} 
-  bool isBlocked(double time){
-    //the time variable is in hour plus minutes in like base ten because claire is interesting
-    List blocks = ScheduledActivityHiveFunctions.getAllActivities();
-    //for (int block in blocks.key)
-
-
-    return false;
-  }
-  double timeToEnergy(double time){
-    //returns the interpolated energy for a specific time
-    List points = averageGraph();
-    points = [
-      FlSpot(0,0),
-      FlSpot(1,0.5),
-      FlSpot(2,1),
-      FlSpot(5,8),
-      FlSpot(7,6),
-      FlSpot(10,10),
-      
-    ];
-    int lowx = 0;
-    double lowy = 0;
-    int highx = 0;
-    double highy = 0;
-    double lowSpace = 100;
-    double highSpace = 100;
-    for (FlSpot x in points){
-      if (x.x <= time && (time - x.x) < lowSpace){
-        lowx = x.x.toInt();
-        lowy = x.y;
-        lowSpace = time - x.x;
-      }
-      if (x.x >= time && (x.x - time) < highSpace){
-        highx = x.x.toInt();
-        highy = x.y;
-        highSpace = x.x - time;
-      }
-    }
-    if (lowx == highx){
-      return lowy.toDouble();
-    }
-    print("low: $lowx high: $highx");
-    //double gapx = (highx - lowx).toDouble();
-    //double weight = (time-lowx)/(highx - lowx).toDouble();
-    return ((time-lowx)/(highx - lowx).toDouble() * highy + ((1 - ((time-lowx)/(highx - lowx).toDouble())) * lowy));
-    // //points[time.floor()].x;
-    //points[(time + 1).floor()].x;
-  }
-class TodoListScreen extends StatefulWidget {
-  const TodoListScreen({super.key});
-  
-  @override
-  State<TodoListScreen> createState() => _TodoListScreenState();
-}
-  
-class _TodoListScreenState extends State<TodoListScreen> {
-  // void timeToEnergy(int time){
-  //   List points = averageGraph();
-  //   int low = 0;
-  //   int high = 0;
-  //   for (FlSpot x in points){
-  //     print(x);
-  //   }
-  //   //points[time.floor()].x;
-  //   //points[(time + 1).floor()].x;
-  // }
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-    child: 
-      Column(
-        
+                    
+        ]
+        )
       )
     );
   }
 }
-void todoBottomSheet(){
 
+
+
+List sort(List sList, double compatValue){
+  List sortList = [];
+  for(var a in sList)
+  {
+    double temp1 = a["priority"]/compatValue;
+    for(var sl in sortList)
+    {
+      double temp2 = sl["priority"]/compatValue;
+      if(temp1 > temp2)
+      {
+        sortList.insert(sl, a);
+      }
+    }
+
+  }
+  return sortList;
+}
+
+List todoListGenerator(){
+  List activList = studyActivities;
+  double productivity = 0;
+  //todoList = [];
+  //List compatability = [];
+  double timeTracker = startTime;
+
+  for(var a in todoList){
+    TodoListHiveFunctions.TodoListBox.delete(a);
+  }
+
+  while(timeTracker <= endTime && activList.isNotEmpty){
+    for(var s in scheduledActivities){
+      //gets rid of times there are activietes scheduled
+      if(s['startTime'] <= timeTracker && s['endTime'] > timeTracker){
+        timeTracker += (s['endTime'] - s['startTime']);
+        if(!s['repeatable']){
+          scheduledActivities.remove(s);
+        }
+      }
+
+      productivity = timeToEnergy(startTime);
+      sort(activList, productivity);
+
+      var activity = activList[0];
+      // for(var a in activList){
+      //   if(productivity == a["priority"]){
+          TodoListHiveFunctions.createActivity({
+            "activity": activity["priority"],
+            "startTime": startTime,
+            "endTime": (startTime + activity["duration"])
+          });
+          startTime += activity["duration"];
+          activList.remove(activity);
+          // break;
+      //   }
+      // }
+    }
+  }
+  print(todoList);
+
+  return todoList;
+  // List.generate(todoList.length, (index) {
+  //   final todoListData = todoList[index];
+  //     print("Activity: ${todoListData["activity"]}, Start Time: ${todoListData["startTime"]}");
+  //       return Card(
+  //         child: ListTile(
+  //           title: 
+  //           //Show Name of user stored in data base
+  //             Column( children: [
+  //               Text("Activity : ${todoListData["activity"]}"),
+  //               Text("Start Time: ${todoListData["startTime"]}"),  
+  //               Text("End Time : ${todoListData["endTime"]}"),
+  //               ]),
+  //           trailing: Row(
+  //             mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 // To check off activity
+  //               IconButton(
+  //                 onPressed: () {
+  //                   TodoListHiveFunctions.TodoListBox.delete(todoListData["key"]);
+  //                   },
+  //                 icon: const Icon(Icons.check_box),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     }
+  //   );
+}
+
+double timeToEnergy(double time){
+  //returns the interpolated energy for a specific time
+  List points = averageGraph();
+  points = [
+    FlSpot(0,0),
+    FlSpot(1,0.5),
+    FlSpot(2,1),
+    FlSpot(5,8),
+    FlSpot(7,6),
+    FlSpot(10,10),     
+  ];
+
+  int lowx = 0;
+  double lowy = 0;
+  int highx = 0;
+  double highy = 0;
+  double lowSpace = 100;
+  double highSpace = 100;
+  for (FlSpot x in points){
+    if (x.x <= time && (time - x.x) < lowSpace){
+      lowx = x.x.toInt();
+      lowy = x.y;
+      lowSpace = time - x.x;
+    }
+    if (x.x >= time && (x.x - time) < highSpace){
+      highx = x.x.toInt();
+      highy = x.y;
+      highSpace = x.x - time;
+    }
+  }
+  if (lowx == highx){
+    return lowy.toDouble();
+  }
+  print("low: $lowx high: $highx");
+  //double gapx = (highx - lowx).toDouble();
+  //double weight = (time-lowx)/(highx - lowx).toDouble();
+  return ((time-lowx)/(highx - lowx).toDouble() * highy + ((1 - ((time-lowx)/(highx - lowx).toDouble())) * lowy));
+  // //points[time.floor()].x;
+  //points[(time + 1).floor()].x;
+}
+
+  
+class TimePickerStart extends StatefulWidget {
+  @override
+  State<TimePickerStart> createState() => _TimePickerState();
+}
+
+class _TimePickerState extends State<TimePickerStart> {
+  String? _selectedTimeStart;
+  TimePickerEntryMode initalEntryMode = TimePickerEntryMode.inputOnly;
+ 
+ Future<void> _show() async {
+  final TimeOfDay? result = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+
+  if(result != null){
+    setState((){
+      _selectedTimeStart = result.format(context);
+      startTime = result.hour + (result.minute/100);
+    });
+  }
+ }
+
+ @override
+ Widget build(BuildContext context) {
+  return 
+    TextButton(
+      onPressed: _show, 
+      child: 
+      Text(
+        _selectedTimeStart != null ? _selectedTimeStart! : 'Study Start Time',
+        style: TextStyle(
+          fontSize: 17,
+          color: const Color.fromARGB(255, 148, 126, 0)
+        ),
+      ),
+    );
+ }
+}
+
+
+class TimePickerEnd extends StatefulWidget {
+  @override
+  State<TimePickerEnd> createState() => _TimePickerStateEnd();
+}
+
+class _TimePickerStateEnd extends State<TimePickerEnd> {
+  String? _selectedTimeEnd;
+  TimePickerEntryMode entryMode = TimePickerEntryMode.inputOnly;
+  
+ 
+ Future<void> _show() async {
+  final TimeOfDay? result = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+
+  if(result != null){
+    setState((){
+      _selectedTimeEnd = result.format(context);
+      endTime = result.hour + (result.minute/100);
+    });
+  }
+ }
+
+ @override
+ Widget build(BuildContext context) {
+  return 
+    TextButton(
+      onPressed: _show, 
+      child: 
+      Text(
+        _selectedTimeEnd != null ? _selectedTimeEnd! : 'Study End Time',
+        style: TextStyle(
+          fontSize: 17,
+          color: const Color.fromARGB(255, 148, 126, 0)
+        )
+      ),
+    );
+ }
 }
