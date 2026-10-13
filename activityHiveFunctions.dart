@@ -1,5 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:cicada/activityHiveBoxConst.dart';
+import 'activityHiveBoxConst.dart';
 
 
 class ActivityEditorHiveFunctions {
@@ -31,7 +31,28 @@ static updateActivity(int key, Map data) {
 
 }
 
+class TodoListHiveFunctions{
+  static final TodoListBox = Hive.box(TodoListHiveBox);
+  static void createActivity(Map data) {
+    TodoListBox.add(data);
+  }
 
+  static void addAllActivity(List data){
+    TodoListBox.addAll(data);
+  }
+
+  static List getAllActivities() {
+    final data = TodoListBox.keys.map((key) {
+      final value = TodoListBox.get(key);
+      return {"key": key, "activity": value["activity"], "startTime": value["startTime"], "endTime": value["endTime"]};
+    }).toList();
+    return data.reversed.toList();
+  }
+
+  static Map getActivity(int key) {
+    return TodoListBox.get(key);
+  }
+}
 
 class ScheduledActivityHiveFunctions {
   // Box which will use to store the things
