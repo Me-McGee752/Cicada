@@ -3,13 +3,16 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'activityHiveFunctions.dart';
 import 'activityHiveBoxConst.dart';
 import 'cicadaDataHiveBoxConst.dart';
-//import 'cicadaDataHiveFunctions.dart';
-//import 'activityEditor.dart';//change to activityPage.dart
+import 'cicadaDataHiveFunctions.dart';
+import 'activityEditor.dart';//change to activityPage.dart
 import 'cicadaData.dart';
 import 'todoList.dart';
 //import 'chart.dart';
 import 'activitiesPage.dart';
+import 'package:firebase_core/firebase_core.dart';
 
+double startTime = 0;
+double endTime = 0;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -125,17 +128,20 @@ class Settings<T> extends PopupRoute<T> {
   String? get barrierLabel => 'Dismissible Dialog';
   @override
   Duration get transitionDuration => const Duration(milliseconds: 300);
-  @override
-  TimePicker StartTimeController = TimePicker("Wake-Up Time");
-  TimePicker EndTimeController = TimePicker("Bed Time");
+  
+  //Type ColorEntry = DropdownMenuEntry<ColorLabel>;
+  //DropdownMenu breakLengthController = DropdownMenu(dropdownMenuEntries: [DropdownMenuEntry(), "5", "10", "15", "20", "25"]);
   Widget buildPage(
   BuildContext context,
   Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
   return Center(
-
-        child: UnconstrainedBox(
+        child: Column(
+        children: [
+        TimePickerStart(),
+        TimePickerEnd(),
+        UnconstrainedBox(
           child: Container(
             padding: const .all(20.0),
             decoration: BoxDecoration(
@@ -144,63 +150,65 @@ class Settings<T> extends PopupRoute<T> {
             ),
             child: Column(
               children: <Widget>[
-                StartTimeController,
-                EndTimeController,
+                
+                
                 ElevatedButton(
-                  child: Text("Submit"),
+                  child: Text("Save"),
                   onPressed: () async {
+                    print(startTime);
+                    print(endTime);
                     if (SleepTimeHiveFunctions.getAllActivities().isEmpty){
                       SleepTimeHiveFunctions.createActivity({
-                        "wakeUpTime": StartTimeController.time,
-                        "sleepTime": EndTimeController.time
+                        "wakeUpTime": startTime,
+                        "sleepTime": endTime,
                     }
                     
                     );
                     
                     } else {
-                        SleepTimeHiveFunctions.updateActivity(
+                      SleepTimeHiveFunctions.updateActivity(
                         SleepTimeHiveFunctions.getAllActivities().first["key"],
                         {
-                        "wakeUpTime": StartTimeController.time,
-                        "sleepTime": EndTimeController.time,
+                        "wakeUpTime": startTime,
+                        "sleepTime": endTime,
                         }
                       );
                     }
+                  print("hive stored!");
                   Navigator.of(context).pop(); // Close the bottom sheet
                       // To refresh the Data stored in Hive after updation
                   getHiveData();
                   }
                 ),
+              
               ]
           )
         )
     )
+        
+        ],
+        ),
   );
   }
 }
 
 
-class TimePicker extends StatefulWidget {
-  String displayText;
-  double? time;
-  TimePicker(this.displayText, [this.time]);
+class TimePickerStart extends StatefulWidget {
   @override
-  State<TimePicker> createState() => _TimePickerState(displayText, time);
+  State<TimePickerStart> createState() => _TimePickerState();
 }
 
-class _TimePickerState extends State<TimePicker> {
-  String? _selectedTime;
-  double? time;
-  String displayText;
-  _TimePickerState(this.displayText, [this.time]);
-  TimePickerEntryMode entryMode = TimePickerEntryMode.inputOnly;
+class _TimePickerState extends State<TimePickerStart> {
+  String? _selectedTimeStart;
+  TimePickerEntryMode initalEntryMode = TimePickerEntryMode.inputOnly;
+ 
  Future<void> _show() async {
   final TimeOfDay? result = await showTimePicker(context: context, initialTime: TimeOfDay.now());
 
   if(result != null){
     setState((){
-      _selectedTime = result.format(context);
-      time = result.hour + (result.minute/100);
+      _selectedTimeStart = result.format(context);
+      startTime = result.hour + (result.minute/100);
     });
   }
  }
@@ -217,20 +225,124 @@ class _TimePickerState extends State<TimePicker> {
   //   floatingActionButton: 
     TextButton(
       onPressed: _show, //child: const Text('Picker'),
-      child:
-       Column(
-        children: [
-        Text(
-        _selectedTime != null ? this.displayText : this.displayText
-        ),
-        
-        Text(
-          time != null ? _selectedTime! : ""
-        )
-      ]
-      
+      child: 
+      Text(
+        _selectedTimeStart != null ? _selectedTimeStart! : 'Start Time'
       ),
-      
     );
  }
 }
+
+
+class TimePickerEnd extends StatefulWidget {
+  @override
+  State<TimePickerEnd> createState() => _TimePickerStateEnd();
+  
+}
+
+class _TimePickerStateEnd extends State<TimePickerEnd> {
+  String? _selectedTimeEnd;
+  TimePickerEntryMode initalEntryMode = TimePickerEntryMode.inputOnly;
+  
+ 
+ Future<void> _show() async {
+  final TimeOfDay? result = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+
+  if(result != null){
+    setState((){
+      _selectedTimeEnd = result.format(context);
+      endTime = result.hour + (result.minute/100);
+    });
+  }
+ }
+
+ @override
+ Widget build(BuildContext context) {
+  return 
+  // Scaffold(
+  //   body: Center(
+  //     child: Text(
+  //       _selectedTime != null ? _selectedTime! : 'Pick Time',
+  //     ),
+  //   ),
+  //   floatingActionButton: 
+    TextButton(
+      onPressed: _show, //child: const Text('Picker'),
+      child: 
+      Text(
+        _selectedTimeEnd != null ? _selectedTimeEnd! : 'End Time'
+      ),
+    );
+ }
+}
+
+// // rip my child
+// class TimePicker extends StatefulWidget {
+//   String displayText;
+//   double? time;
+//   Object name;
+//   ValueNotifier<String> selectedTime;
+//   TimePicker(this.displayText, this.selectedTime, this.name);
+//   @override
+//   State<TimePicker> createState() => _TimePickerState(displayText, selectedTime);
+// }
+
+// class _TimePickerState extends State<TimePicker> {
+//     //ValueNotifier<String> selectedTime;
+//   double? time;
+//   String displayText;
+//   Object name;
+//   _TimePickerState(this.displayText, this.name
+//   //, this.selectedTime
+//   );
+//   TimePickerEntryMode entryMode = TimePickerEntryMode.inputOnly;
+
+//  Future<void> _show() async {
+//   final TimeOfDay? result = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+//   if(result != null){
+//     setState((){
+//       TimePicker.selectedTime.value = result.format(context);
+//       selectedTime = result.format(context);
+//       time = result.hour + (result.minute/100);
+//     });
+//   }
+  
+//  }
+
+//  @override
+//  Widget build(BuildContext context) {
+//   return ValueListenableBuilder(
+//     valueListenable: selectedTime, 
+
+//     builder: (BuildContext context, value, Widget? child) {
+//       return TextButton(
+//       onPressed: _show, //child: const Text('Picker'),
+//       child:
+//        Column(
+//         children: [
+//         Text(
+//         selectedTime != null ? this.displayText : this.displayText
+//         ),
+        
+//         Text(
+//           time != null ? selectedTime.value : ""
+//         )
+//       ]
+    
+//       ),
+//     );
+//     }
+
+//     );
+//   // Scaffold(
+//   //   body: Center(
+//   //     child: Text(
+//   //       _selectedTime != null ? _selectedTime! : 'Pick Time',
+//   //     )
+//   //   ),
+//   //   floatingActionButton: 
+  
+    
+//  }
+// }
+
