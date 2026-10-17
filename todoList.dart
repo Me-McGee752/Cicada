@@ -12,6 +12,7 @@ List todoList = [];
 List studyActivities = [];
 List scheduledActivities = [];
 //List sortList = [];
+List activList = studyActivities;
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({super.key});
@@ -52,9 +53,7 @@ class _TodoListPageState extends State<TodoListPage> {
         ),
         body: 
         Column(
-        children: 
-  
-          
+        children:     
         [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -75,7 +74,8 @@ class _TodoListPageState extends State<TodoListPage> {
               IconButton(
                 icon: Icon(Icons.refresh),
                 onPressed: () {
-                  todoListGenerator();
+                  activList = (sort(activList, timeToEnergy(3)));
+                  //todoListGenerator();
                 },
               )
             ] 
@@ -91,21 +91,21 @@ class _TodoListPageState extends State<TodoListPage> {
 
 
 List sort(List sList, double compatValue){
-  List sortList = [];
-  for(var a in sList)
+  for(int a = 0; a < sList.length; a++)
   {
-    double temp1 = a["priority"]/compatValue;
-    for(var sl in sortList)
+    for(int s = a + 1; s < sList.length; s++)
     {
-      double temp2 = sl["priority"]/compatValue;
-      if(temp1 > temp2)
-      {
-        sortList.insert(sl, a);
+      Object temp = 0;
+      double aValue = compatValue/sList[a]["priority"];
+      double sValue = compatValue/sList[s]["priority"];
+      if(sValue > aValue){
+        temp = sList[a];
+        sList[a] = sList[s];
+        sList[s] = temp;
       }
     }
-
   }
-  return sortList;
+  return sList;
 }
 
 List todoListGenerator(){
@@ -129,8 +129,8 @@ List todoListGenerator(){
         }
       }
 
-      productivity = timeToEnergy(startTime);
-      sort(activList, productivity);
+      productivity = timeToEnergy(timeTracker);
+      activList = sort(activList, productivity);
 
       var activity = activList[0];
       // for(var a in activList){
@@ -147,6 +147,7 @@ List todoListGenerator(){
       // }
     }
   }
+  todoList = TodoListHiveFunctions.getAllActivities();
   print(todoList);
 
   return todoList;
