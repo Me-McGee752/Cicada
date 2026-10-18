@@ -74,8 +74,9 @@ class _TodoListPageState extends State<TodoListPage> {
               IconButton(
                 icon: Icon(Icons.refresh),
                 onPressed: () {
-                  activList = (sort(activList, timeToEnergy(3)));
-                  //todoListGenerator();
+                  //activList = (sort(activList, timeToEnergy(3)));
+                  getHiveData();
+                  todoListGenerator();
                 },
               )
             ] 
@@ -109,17 +110,25 @@ List sort(List sList, double compatValue){
 }
 
 List todoListGenerator(){
+  print("todoListgen is a go              I                     I                  I                     I            I           I                 I                 I             I huge gap (:");
   List activList = studyActivities;
+  
   double productivity = 0;
-  //todoList = [];
+  todoList = [];
   //List compatability = [];
+  //print("startTime: $startTime");
   double timeTracker = startTime;
-
-  for(var a in todoList){
-    TodoListHiveFunctions.TodoListBox.delete(a);
+  // print("TodoListHiveFunction.TodoListBox pre delete:");
+  // print(TodoListHiveFunctions.getAllActivities());
+  //this works i tested it it deletes all the things in todolistbox
+  for(var a in TodoListHiveFunctions.getAllActivities()){
+    TodoListHiveFunctions.TodoListBox.delete(a["key"]);
   }
-
+  // print("TodoListHiveFunction.TodoListBox post delete:");
+  // print(TodoListHiveFunctions.getAllActivities());
+  
   while(timeTracker <= endTime && activList.isNotEmpty){
+    print("operation while loop is a go");
     for(var s in scheduledActivities){
       //gets rid of times there are activietes scheduled
       if(s['startTime'] <= timeTracker && s['endTime'] > timeTracker){
@@ -128,24 +137,31 @@ List todoListGenerator(){
           scheduledActivities.remove(s);
         }
       }
+    }
 
       productivity = timeToEnergy(timeTracker);
+      print("activList presort: $activList");
       activList = sort(activList, productivity);
-
+      print("activList postsort: $activList");
       var activity = activList[0];
       // for(var a in activList){
       //   if(productivity == a["priority"]){
+          //print("activity duration:");
+          //print(activity["duration"]);
           TodoListHiveFunctions.createActivity({
             "activity": activity["priority"],
             "startTime": startTime,
-            "endTime": (startTime + activity["duration"])
+            "endTime": (startTime + (activity["duration"]/60))
           });
-          startTime += activity["duration"];
+          timeTracker += activity["duration"]/60;
+          print("activList pre remove: $activList");
           activList.remove(activity);
+          print("activList post remove: $activList");
+          //activList = [];
           // break;
       //   }
       // }
-    }
+    print("timeTracker: $timeTracker EndTime: $endTime");
   }
   todoList = TodoListHiveFunctions.getAllActivities();
   print(todoList);
@@ -191,6 +207,10 @@ double timeToEnergy(double time){
     FlSpot(5,8),
     FlSpot(7,6),
     FlSpot(10,10),     
+    FlSpot(13, 8),
+    FlSpot(14,7),
+    FlSpot(15, 6),
+
   ];
 
   int lowx = 0;
@@ -214,7 +234,7 @@ double timeToEnergy(double time){
   if (lowx == highx){
     return lowy.toDouble();
   }
-  print("low: $lowx high: $highx");
+  //print("low: $lowx high: $highx");
   //double gapx = (highx - lowx).toDouble();
   //double weight = (time-lowx)/(highx - lowx).toDouble();
   return ((time-lowx)/(highx - lowx).toDouble() * highy + ((1 - ((time-lowx)/(highx - lowx).toDouble())) * lowy));
