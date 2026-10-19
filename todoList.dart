@@ -77,11 +77,28 @@ class _TodoListPageState extends State<TodoListPage> {
                   //activList = (sort(activList, timeToEnergy(3)));
                   getHiveData();
                   todoListGenerator();
+                  setState((){});
                 },
               )
             ] 
           ),
-                    
+          Column(
+          children: List.generate(todoList.length, (index) {
+            final item = todoList[todoList.length-index-1];
+          return Card(
+            child: ListTile(
+              title: Column( children: [
+                      Text("startTime : ${item["startTime"]}"),
+                      Text("endTime : ${item["endTime"]}"),
+                      Text("Activity : ${item["activity"]}"),
+                ]),
+            )
+          );
+
+          
+  }
+          )
+          )
         ]
         )
       )
@@ -97,8 +114,8 @@ List sort(List sList, double compatValue){
     for(int s = a + 1; s < sList.length; s++)
     {
       Object temp = 0;
-      double aValue = compatValue/sList[a]["priority"];
-      double sValue = compatValue/sList[s]["priority"];
+      double aValue = ((compatValue/sList[a]["priority"])-1).abs();
+      double sValue = ((compatValue/sList[s]["priority"])-1).abs();
       if(sValue > aValue){
         temp = sList[a];
         sList[a] = sList[s];
@@ -149,9 +166,10 @@ List todoListGenerator(){
           //print("activity duration:");
           //print(activity["duration"]);
           TodoListHiveFunctions.createActivity({
-            "activity": activity["priority"],
-            "startTime": startTime,
-            "endTime": (startTime + (activity["duration"]/60))
+            "activity": activity["activity"],
+            "priority": activity["priority"],
+            "startTime": timeTracker,
+            "endTime": (timeTracker + (activity["duration"]/60))
           });
           timeTracker += activity["duration"]/60;
           print("activList pre remove: $activList");
