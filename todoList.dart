@@ -148,8 +148,8 @@ List todoListGenerator(){
     print("operation while loop is a go");
     for(var s in scheduledActivities){
       //gets rid of times there are activietes scheduled
-      if(s['startTime'] <= timeTracker && s['endTime'] > timeTracker){
-        timeTracker += (s['endTime'] - s['startTime']);
+      if(s['startTime'] <= timeTracker && s['endTime'] > timeTracker && DateTime.now().weekday == s['dayOfWeek']){
+        timeTracker = s['endTime'];
         if(!s['repeatable']){
           scheduledActivities.remove(s);
         }
