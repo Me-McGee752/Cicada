@@ -6,7 +6,15 @@ bool light = false;
 double startTime = 0;
 double endTime = 0;
 String dropdownvalue = "Sunday";
-
+var weekdayStringToInt = {
+      'Monday' : 1,
+      'Tuesday' : 2,
+      'Wednesday' : 3,
+      'Thursday' : 4,
+      'Friday' : 5,
+      'Saturday' : 6,
+      'Sunday' : 7
+  };
 class ScheduledActivityScreen extends StatefulWidget {
   const ScheduledActivityScreen({super.key});
 
@@ -57,7 +65,24 @@ class _ScheduledActivityScreenState extends State<ScheduledActivityScreen> {
             List.generate(myHiveData.length, (index) {
               final scheduledActivityData = myHiveData[index];
               print("Activity: ${scheduledActivityData["activity"]}, Day of Week: ${scheduledActivityData["dayOfWeek"]}, Repeatable: ${scheduledActivityData["repeatable"]}");
-              return Card(
+              return Dismissible(
+                direction: DismissDirection.endToStart,
+                  background: Card(
+                  color: Colors.red,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                        child: Icon(Icons.delete, color: Colors.white, size: 40),
+                    ),
+                  ),
+                ),
+                onDismissed: (direction) {
+                  ScheduledActivityHiveFunctions.ScheduledActivityBox.delete(scheduledActivityData["key"]);
+                  getHiveData();
+                },
+                key: Key(scheduledActivityData["key"].toString()),
+                child: Card(
                 child: ListTile(
                   title: 
                     //Show Name of user stored in data base
@@ -88,7 +113,8 @@ class _ScheduledActivityScreenState extends State<ScheduledActivityScreen> {
                       ],
                     ),
                   ),
-                );
+                )
+              );
             }
           ),
         ),
@@ -223,7 +249,7 @@ void scheduledActivity(int? itemKey) async {
                     print("priority: ${light.toString()}");
                     ScheduledActivityHiveFunctions.createActivity({
                       "activity": _activityController.text,
-                      "dayOfWeek": dropdownvalue,
+                      "dayOfWeek": weekdayStringToInt[dropdownvalue],
                       "startTime": startTime,
                       "endTime": endTime,
                       "repeatable": light,
@@ -234,7 +260,7 @@ void scheduledActivity(int? itemKey) async {
                     if (itemKey != null) {
                       ScheduledActivityHiveFunctions.updateActivity(itemKey, {
                         "activity": _activityController.text,
-                        "dayOfWeek": dropdownvalue,
+                        "dayOfWeek": weekdayStringToInt[dropdownvalue],
                         "startTime": startTime,
                         "endTime": endTime,
                         "repeatable": light.toString(),
