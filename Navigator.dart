@@ -7,6 +7,7 @@ import 'cicadaDataHiveFunctions.dart';
 import 'activityEditor.dart';//change to activityPage.dart
 import 'cicadaData.dart';
 import 'todoList.dart';
+import 'dart:developer';
 //import 'chart.dart';
 import 'activitiesPage.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,6 +24,7 @@ Future<void> main() async {
   await Hive.openBox(activityEditorHiveBox);
   await Hive.openBox(scheduledActivityHiveBox);
   await Hive.openBox(sleepTimesHiveBox);
+  await Hive.openBox(TodoListHiveBox);
   // Open the Hive box to store items
 
   runApp(const NavigatorPage(currentIndex: 0));
