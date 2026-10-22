@@ -161,8 +161,6 @@ class InfoPopupRoute<T> extends PopupRoute<T> {
                       style: TextStyle(
                         fontSize: 22,
                         color: Colors.black,
-                        decoration: TextDecoration.underline,
-                        decorationColor: const Color.fromARGB(0, 255, 255, 255),
                       ),
                       softWrap: true,                     
                 ),
@@ -173,6 +171,23 @@ class InfoPopupRoute<T> extends PopupRoute<T> {
       )
     );
   }
+}
+
+String armytoNormal(double armyTime){
+  String finalTime = "";
+  int minutes = ((armyTime - armyTime.toInt())*100).toInt();
+  String zeroMinute = "";
+  if (minutes<10){
+    zeroMinute = "0";
+  }
+  if(armyTime > 12){
+    finalTime = (armyTime-12).toInt().toString() + ":" + zeroMinute +minutes.toString() + " pm";
+  }
+  else{
+    finalTime = (armyTime).toInt().toString() + ":" + zeroMinute + minutes.toString() + " am";
+  }
+  
+  return finalTime;
 }
 
 
