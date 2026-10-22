@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:hive_flutter/hive_flutter.dart';
 import 'activityHiveFunctions.dart';
 import 'package:flutter/services.dart';
+import 'NavigatorPage.dart';
 //import 'scheduledActivity.dart';
 
 int dropdownvalue = 60;
@@ -22,7 +23,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
   // TextFields' controllers for adding  or updating data
   final TextEditingController _activityController = TextEditingController();
   final TextEditingController _durationController = TextEditingController();
-  final TextEditingController _priorityController = TextEditingController();
+//  final TextEditingController _priorityController = TextEditingController();
 
   // To Update the data from Hive in local variable
   void getHiveData() {
@@ -45,11 +46,14 @@ class _ActivityScreenState extends State<ActivityScreen> {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 217, 0))
       ),
       home: Scaffold(
-        // appBar: AppBar(
-        //   title: const Text("Activities"),
-        //   backgroundColor: Colors.amber,
-        //   foregroundColor: Colors.white,
-        // ),
+        appBar: AppBar(
+          title: const Text("Activities"),
+          backgroundColor: Colors.amber,
+          foregroundColor: Colors.white,
+          actions: <Widget> [
+           InfoButton(Colors.white, "Press the 'Create Activity' button to add an activity for your todo-list."),
+          ],
+        ),
         // floatingActionButton: FloatingActionButton.extended(
         //   label: const Text("Add Activity"),
         //   icon: const Icon(Icons.add),
@@ -168,6 +172,10 @@ void activity(int? itemKey) async {
                         color: Colors.black
                        ),
                   )),
+                  Align(
+                    alignment: AlignmentGeometry.centerRight,
+                    child: InfoButton(Colors.black, "When ranking your activity's priority, a priority of 0 is least important, and a priority of 10 is the most important activity. The duration is how long you will need to complete this activity in minutes")
+                  ),
                   const SizedBox(
                     height: 10
                   ),
@@ -198,7 +206,7 @@ void activity(int? itemKey) async {
                           height: 50,
                         ),
                         Text(
-                          'Rate activity prority out of 10: ',
+                          'Rank activity priority out of 10: ',
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.black
