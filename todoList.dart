@@ -48,8 +48,12 @@ class _TodoListPageState extends State<TodoListPage> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text("Todo"),
+          actions: <Widget> [
+           InfoButton(Colors.white, "Enter the times you plan on starting and stopping your study session. And then press the refresh button to generate your todo list schedule.\n \nIf the list doesn't generate make sure that the start time is before the end time, pay attention to am and pm markings\n \n After completing a item on your todo list swipe left to take it off your list \n \n If you need to click the refresh button to generate a new list"),
+          ],
           backgroundColor: Colors.amber,
           foregroundColor: Colors.white,
+          
           
         ),
         body: 
