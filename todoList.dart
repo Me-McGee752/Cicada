@@ -39,6 +39,7 @@ class _TodoListPageState extends State<TodoListPage> {
     getHiveData();
   }
   @override
+  //CFBODY (I decided to make a new notation where CF means control F and then you say what it control fs to so that you can find things easier with ctrl f)
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
@@ -85,13 +86,48 @@ class _TodoListPageState extends State<TodoListPage> {
           Column(
           children: List.generate(todoList.length, (index) {
             final item = todoList[todoList.length-index-1];
-          return Card(
-            child: ListTile(
+          return Dismissible(
+            direction: DismissDirection.endToStart,
+            background: Card(
+                  color: Colors.green,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15),
+                        child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Row(
+                          children: [
+                            Spacer(),
+                            Icon(Icons.celebration, color: Colors.white, size: 40),
+                            Text("Congrats!", style: TextStyle(color: Colors.white)),
+                            Icon(Icons.celebration, color: Colors.white, size: 40),
+                          ]
+                        )
+                        )
+                    ),
+                  ),
+                ),
+            onDismissed: (direction) {
+              // TodoListHiveFunctions.TodoListBox.delete(item["key"]);
+              // ActivityEditorHiveFunctions.activityBox.delete(item["activityKey"]);
+              // getHiveData();
+              // todoListGenerator();
+              setState((){TodoListHiveFunctions.TodoListBox.delete(item["key"]);
+              ActivityEditorHiveFunctions.activityBox.delete(item["activityKey"]);});
+              getHiveData();
+              todoListGenerator();
+              setState((){});
+            },
+            key: Key(item["key"].toString()),
+            child: Card(
+              child: ListTile(
               title: Column( children: [
-                      Text("startTime : ${item["startTime"]}"),
-                      Text("endTime : ${item["endTime"]}"),
+                      Text("startTime : ${(item["startTime"]).floor()+0.01*((100*(item["startTime"]-item["startTime"].floor())).floor())}"),
+                      Text("endTime : ${(item["endTime"]).floor()+0.01*((100*(item["endTime"]-item["endTime"].floor())).floor())}"),
                       Text("Activity : ${item["activity"]}"),
                 ]),
+            )
             )
           );
 
@@ -129,18 +165,21 @@ List sort(List sList, double compatValue){
 List todoListGenerator(){
   print("todoListgen is a go              I                     I                  I                     I            I           I                 I                 I             I huge gap (:");
   List activList = studyActivities;
-  
+  double claireToPercent(double claire) => claire.floor()+((claire-claire.floor())*5/3);
+  double percentToClaire(double percent) => percent.floor()+((percent-percent.floor())*3/5);
+  double roundTime(double badTime) => 0.01*((100*badTime).floor());
   double productivity = 0;
   todoList = [];
   //List compatability = [];
   //print("startTime: $startTime");
-  double timeTracker = startTime;
+  double timeTracker = claireToPercent(startTime); //time tracker is now a percent var
   // print("TodoListHiveFunction.TodoListBox pre delete:");
   // print(TodoListHiveFunctions.getAllActivities());
   //this works i tested it it deletes all the things in todolistbox
   for(var a in TodoListHiveFunctions.getAllActivities()){
     TodoListHiveFunctions.TodoListBox.delete(a["key"]);
   }
+  
   // print("TodoListHiveFunction.TodoListBox post delete:");
   // print(TodoListHiveFunctions.getAllActivities());
   
@@ -149,7 +188,7 @@ List todoListGenerator(){
     for(var s in scheduledActivities){
       //gets rid of times there are activietes scheduled
       if(s['startTime'] <= timeTracker && s['endTime'] > timeTracker && DateTime.now().weekday == s['dayOfWeek']){
-        timeTracker = s['endTime'];
+        timeTracker = claireToPercent(s['endTime']);
         if(!s['repeatable']){
           scheduledActivities.remove(s);
         }
@@ -163,18 +202,61 @@ List todoListGenerator(){
       var activity = activList[0];
       // for(var a in activList){
       //   if(productivity == a["priority"]){
-          //print("activity duration:");
-          //print(activity["duration"]);
+          print("activity duration:");
+          print(activity["duration"]);
+          int temp1 = ((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor();
+          int temp2 = ((timeTracker-claireToPercent(startTime) + 1/3)/(11/6)).floor();
+          print("timeTRacker: $timeTracker");
+          print("interesting if statementtemp 1: $temp1");
+          print("temp 2: $temp2");
+            if(((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor() != ((timeTracker-claireToPercent(startTime) + 1/3)/(11/6)).floor()){
+              print("break intbetween these activities");
+              //if the break should start in the current activity
+              if(timeTracker == percentToClaire(claireToPercent(startTime)-1/3+((11/6)*((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor()))){
+              TodoListHiveFunctions.createActivity({
+                "activity": "break",
+                "startTime": percentToClaire(claireToPercent(startTime)-1/3+((11/6)*((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor())),
+                "endTime": percentToClaire(claireToPercent(startTime)+((11/6)*((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor()))
+              });
+              }else{
+                TodoListHiveFunctions.createActivity({
+                "activity": activity["activity"],
+                "priority": activity["priority"],
+                "startTime": percentToClaire(timeTracker),
+                "endTime": percentToClaire(claireToPercent(startTime)-1/3+((11/6)*((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor())),
+                "activityKey": activity["key"],
+                });
+                // ActivityEditorHiveFunctions.updateActivity(activity["key"], {
+                // "duration": activity["duration"]-(claireToPercent(startTime)-1/3+((11/6)*((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor())-timeTracker),
+                // });
+                activity["duration"] = 60*((activity["duration"]/60)-(claireToPercent(startTime)-1/3+((11/6)*((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor())-timeTracker));
+                print("activity duration:");
+                print(activity["duration"]);
+                //sets Time tracker to the end of the break
+                timeTracker = claireToPercent(startTime)+((11/6)*(temp1));
+                print("break timeTracker: $timeTracker");
+                print("break num:");
+                print(((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor());
+                TodoListHiveFunctions.createActivity({
+                "activity": "break",
+                "startTime": percentToClaire(claireToPercent(startTime)-1/3+((11/6)*((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor())),
+                "endTime": percentToClaire(claireToPercent(startTime)+((11/6)*((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor())),
+              });
+              //sets Time Tracker to the next break start
+              
+              }
+            }
           TodoListHiveFunctions.createActivity({
             "activity": activity["activity"],
             "priority": activity["priority"],
-            "startTime": timeTracker,
-            "endTime": (timeTracker + (activity["duration"]/60))
+            "startTime": percentToClaire(timeTracker),
+            "endTime": percentToClaire(timeTracker + (activity["duration"]/60)),
+            "activityKey": activity["key"],
           });
           timeTracker += activity["duration"]/60;
-          print("activList pre remove: $activList");
+          // print("activList pre remove: $activList");
           activList.remove(activity);
-          print("activList post remove: $activList");
+          // print("activList post remove: $activList");
           //activList = [];
           // break;
       //   }
