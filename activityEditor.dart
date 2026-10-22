@@ -51,7 +51,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
           backgroundColor: Colors.amber,
           foregroundColor: Colors.white,
           actions: <Widget> [
-           InfoButton(Colors.white, "Press the 'Create Activity' button to add an activity for your todo-list."),
+           InfoButton(Colors.white, "Press the 'Create Activity' button to add an activity for your todo-list.\n \nPress the penicl if you need to edit the activity in anyway.\n\nTo delete a unwanted activity swipe right."),
           ],
         ),
         // floatingActionButton: FloatingActionButton.extended(
@@ -174,7 +174,7 @@ void activity(int? itemKey) async {
                   )),
                   Align(
                     alignment: AlignmentGeometry.centerRight,
-                    child: InfoButton(Colors.black, "When ranking your activity's priority, a priority of 0 is least important, and a priority of 10 is the most important activity. The duration is how long you will need to complete this activity in minutes")
+                    child: InfoButton(Colors.black, "When ranking your activity's priority, a priority of 0 means the activity won't require a lot of attention, and a priority of 10 means it will requires a lot of attention.\n \nThe duration is how long you think it will take to complete the activity")
                   ),
                   const SizedBox(
                     height: 10
