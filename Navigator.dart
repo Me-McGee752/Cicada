@@ -161,6 +161,8 @@ class InfoPopupRoute<T> extends PopupRoute<T> {
                       style: TextStyle(
                         fontSize: 22,
                         color: Colors.black,
+                        decoration: TextDecoration.underline,
+                        decorationColor: const Color.fromARGB(0, 255, 255, 255),
                       ),
                       softWrap: true,                     
                 ),
@@ -189,7 +191,6 @@ String armytoNormal(double armyTime){
   
   return finalTime;
 }
-
 
 // class SettingsButton extends StatelessWidget {
 //   @override
