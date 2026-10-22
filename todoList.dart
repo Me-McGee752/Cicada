@@ -48,12 +48,8 @@ class _TodoListPageState extends State<TodoListPage> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text("Todo"),
-          actions: <Widget> [
-           InfoButton(Colors.white, "Enter the times you plan on starting and stopping your study session. And then press the refresh button to generate your todo list schedule.\n \nIf the list doesn't generate make sure that the start time is before the end time, pay attention to am and pm markings\n \n After completing a item on your todo list swipe left to take it off your list \n \n If you need to click the refresh button to generate a new list"),
-          ],
           backgroundColor: Colors.amber,
           foregroundColor: Colors.white,
-          
           
         ),
         body: 
@@ -127,8 +123,9 @@ class _TodoListPageState extends State<TodoListPage> {
             child: Card(
               child: ListTile(
               title: Column( children: [
-                      Text("startTime : ${(item["startTime"]).floor()+0.01*((100*(item["startTime"]-item["startTime"].floor())).floor())}"),
-                      Text("endTime : ${(item["endTime"]).floor()+0.01*((100*(item["endTime"]-item["endTime"].floor())).floor())}"),
+                
+                      Text("startTime : ${armytoNormal(((item["startTime"]).floor()+0.01*((100*(item["startTime"]-item["startTime"].floor())).floor())))}"),
+                      Text("endTime : ${armytoNormal((item["endTime"]).floor()+0.01*((100*(item["endTime"]-item["endTime"].floor())).floor()))}"),
                       Text("Activity : ${item["activity"]}"),
                 ]),
             )
@@ -171,12 +168,21 @@ List todoListGenerator(){
   List activList = studyActivities;
   double claireToPercent(double claire) => claire.floor()+((claire-claire.floor())*5/3);
   double percentToClaire(double percent) => percent.floor()+((percent-percent.floor())*3/5);
-  double roundTime(double badTime) => 0.01*((100*badTime).floor());
+  //double roundTime(double badTime) => 0.01*((100*badTime).floor());
   double productivity = 0;
   todoList = [];
+  bool skip = false;
+  double timeTracker = 0;
   //List compatability = [];
   //print("startTime: $startTime");
-  double timeTracker = claireToPercent(startTime); //time tracker is now a percent var
+  if(claireToPercent(DateTime.now().hour.toDouble()) + (DateTime.now().minute.toDouble()/100) > claireToPercent(startTime)){
+    timeTracker = DateTime.now().hour.toDouble() + DateTime.now().minute.toDouble()/60;
+  }
+  else{
+    timeTracker = claireToPercent(startTime);
+  }
+  
+  //double timeTracker = claireToPercent(startTime); //time tracker is now a percent var
   // print("TodoListHiveFunction.TodoListBox pre delete:");
   // print(TodoListHiveFunctions.getAllActivities());
   //this works i tested it it deletes all the things in todolistbox
@@ -188,16 +194,18 @@ List todoListGenerator(){
   // print(TodoListHiveFunctions.getAllActivities());
   
   while(timeTracker <= endTime && activList.isNotEmpty){
+    skip = false;
     print("operation while loop is a go");
-    for(var s in scheduledActivities){
-      //gets rid of times there are activietes scheduled
-      if(s['startTime'] <= timeTracker && s['endTime'] > timeTracker && DateTime.now().weekday == s['dayOfWeek']){
-        timeTracker = claireToPercent(s['endTime']);
-        if(!s['repeatable']){
-          scheduledActivities.remove(s);
-        }
-      }
-    }
+  //   for(var s in scheduledActivities){
+  //     //gets rid of times there are activietes scheduled
+  //     if(s['startTime'] <= timeTracker && s['endTime'] > timeTracker && DateTime.now().weekday == s['dayOfWeek']){
+  //       timeTracker = claireToPercent(s['endTime']);
+  //       if(!s['repeatable']){
+  //         scheduledActivities.remove(s);
+  //       }
+  //     }
+  //   }
+
 
       productivity = timeToEnergy(timeTracker);
       print("activList presort: $activList");
@@ -222,7 +230,11 @@ List todoListGenerator(){
                 "startTime": percentToClaire(claireToPercent(startTime)-1/3+((11/6)*((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor())),
                 "endTime": percentToClaire(claireToPercent(startTime)+((11/6)*((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor()))
               });
-              }else{
+              skip = true;
+              print("skip is being done");
+              }
+              else{
+                print("something");
                 TodoListHiveFunctions.createActivity({
                 "activity": activity["activity"],
                 "priority": activity["priority"],
@@ -250,6 +262,7 @@ List todoListGenerator(){
               
               }
             }
+            if (!skip){
           TodoListHiveFunctions.createActivity({
             "activity": activity["activity"],
             "priority": activity["priority"],
@@ -265,40 +278,14 @@ List todoListGenerator(){
           // break;
       //   }
       // }
+            }
     print("timeTracker: $timeTracker EndTime: $endTime");
   }
+
   todoList = TodoListHiveFunctions.getAllActivities();
   print(todoList);
 
   return todoList;
-  // List.generate(todoList.length, (index) {
-  //   final todoListData = todoList[index];
-  //     print("Activity: ${todoListData["activity"]}, Start Time: ${todoListData["startTime"]}");
-  //       return Card(
-  //         child: ListTile(
-  //           title: 
-  //           //Show Name of user stored in data base
-  //             Column( children: [
-  //               Text("Activity : ${todoListData["activity"]}"),
-  //               Text("Start Time: ${todoListData["startTime"]}"),  
-  //               Text("End Time : ${todoListData["endTime"]}"),
-  //               ]),
-  //           trailing: Row(
-  //             mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 // To check off activity
-  //               IconButton(
-  //                 onPressed: () {
-  //                   TodoListHiveFunctions.TodoListBox.delete(todoListData["key"]);
-  //                   },
-  //                 icon: const Icon(Icons.check_box),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     }
-  //   );
 }
 
 double timeToEnergy(double time){
