@@ -56,6 +56,9 @@ class _CicadaDataScreenState extends State<CicadaDataScreen> {
           title: const Text("Cicada Data"),
           backgroundColor: Colors.amber,
           foregroundColor: Colors.white,
+          actions: <Widget> [
+           InfoButton(Colors.white, "First, rate your energy level from 0-10, where 0 is when you feel the least productive and 10 is when you feel the most productive.\n \nThen, press the check mark to lock it in."),
+          ],
         ),
       body: 
       SingleChildScrollView(
