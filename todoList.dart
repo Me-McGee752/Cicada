@@ -126,8 +126,8 @@ class _TodoListPageState extends State<TodoListPage> {
               child: ListTile(
               title: Column( children: [
                 
-                      Text("startTime : ${armytoNormal(((item["startTime"]).floor()+0.01*((100*(item["startTime"]-item["startTime"].floor())).floor())))}"),
-                      Text("endTime : ${armytoNormal((item["endTime"]).floor()+0.01*((100*(item["endTime"]-item["endTime"].floor())).floor()))}"),
+                      Text((armytoNormal(((item["startTime"]).floor()+0.01*((100*(item["startTime"]-item["startTime"].floor())).floor())))) + "-" + (armytoNormal((item["endTime"]).floor()+0.01*((100*(item["endTime"]-item["endTime"].floor())).floor())))),
+                      //Text({armytoNormal((item["endTime"]).floor()+0.01*((100*(item["endTime"]-item["endTime"].floor())).floor()))}"),
                       Text("Activity : ${item["activity"]}"),
                 ]),
             )
@@ -177,12 +177,13 @@ List todoListGenerator(){
   double timeTracker = 0;
   //List compatability = [];
   //print("startTime: $startTime");
-  if(claireToPercent(DateTime.now().hour.toDouble()) + (DateTime.now().minute.toDouble()/100) > claireToPercent(startTime)){
-    timeTracker = DateTime.now().hour.toDouble() + DateTime.now().minute.toDouble()/60;
-  }
-  else{
+  // if(claireToPercent(DateTime.now().hour.toDouble()) + (DateTime.now().minute.toDouble()/100) > claireToPercent(startTime)){
+  //   timeTracker = DateTime.now().hour.toDouble() + DateTime.now().minute.toDouble()/60;
+  // }
+  // else
+  // {
     timeTracker = claireToPercent(startTime);
-  }
+  // }
   
   //double timeTracker = claireToPercent(startTime); //time tracker is now a percent var
   // print("TodoListHiveFunction.TodoListBox pre delete:");
@@ -293,18 +294,21 @@ List todoListGenerator(){
 double timeToEnergy(double time){
   //returns the interpolated energy for a specific time
   List points = averageGraph();
-  points = [
-    FlSpot(0,0),
-    FlSpot(1,0.5),
-    FlSpot(2,1),
-    FlSpot(5,8),
-    FlSpot(7,6),
-    FlSpot(10,10),     
-    FlSpot(13, 8),
-    FlSpot(14,7),
-    FlSpot(15, 6),
+  // for(int hour = 0; hour<24; hour++){
+  //   if(CicadaDataHiveFunctions
+  // }
+  // points = [
+  //   FlSpot(0,0),
+  //   FlSpot(1,0.5),
+  //   FlSpot(2,1),
+  //   FlSpot(5,8),
+  //   FlSpot(7,6),
+  //   FlSpot(10,10),     
+  //   FlSpot(13, 8),
+  //   FlSpot(14,7),
+  //   FlSpot(15, 6),
 
-  ];
+  // ];
 
   int lowx = 0;
   double lowy = 0;
