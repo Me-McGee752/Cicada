@@ -182,7 +182,7 @@ String armytoNormal(double armyTime){
   if (minutes<10){
     zeroMinute = "0";
   }
-  if(armyTime > 12){
+  if(armyTime.toInt() > 12){
     finalTime = (armyTime-12).toInt().toString() + ":" + zeroMinute +minutes.toString() + " pm";
   }
   else{
