@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'cicadaDataHiveBoxConst.dart';
@@ -57,7 +58,7 @@ class _CicadaDataScreenState extends State<CicadaDataScreen> {
           backgroundColor: Colors.amber,
           foregroundColor: Colors.white,
           actions: <Widget> [
-           InfoButton(Colors.white, "First, rate your energy level from 0-10, where 0 is when you feel the least productive and 10 is when you feel the most productive.\n \nThen, press the check mark to lock it in."),
+           InfoButton(Colors.white, "First, rate your energy level from 0-10, where 0 is when you feel the least productive and 10 is when you feel the most productive.\n \nThen, press the check mark to lock it in.\n \nA minimum of two points are required to generate a todo-list"),
           ],
         ),
       body: 
@@ -75,10 +76,13 @@ class _CicadaDataScreenState extends State<CicadaDataScreen> {
           IconButton(
                 icon: const Icon(Icons.check),
                 onPressed: (){
+                  print(averageGraph());
+                  print(averageGraph().contains(FlSpot(11, 5.4)));
                   Navigator.pushReplacement(context, 
                     MaterialPageRoute(builder: (BuildContext context) => 
                     //super.widget
                     NavigatorPage(currentIndex: 2)
+                    
                     ),
                   );
                   CicadaDataHiveFunctions.createEnergyPoint({
