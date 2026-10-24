@@ -44,7 +44,7 @@ class TodoListHiveFunctions{
   static List getAllActivities() {
     final data = TodoListBox.keys.map((key) {
       final value = TodoListBox.get(key);
-      return {"key": key, "activity": value["activity"], "startTime": value["startTime"], "endTime": value["endTime"]};
+      return {"key": key, "activity": value["activity"], "startTime": value["startTime"], "endTime": value["endTime"], "activityKey": value["activityKey"]};
     }).toList();
     return data.reversed.toList();
   }
