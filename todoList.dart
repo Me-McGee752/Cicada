@@ -4,7 +4,7 @@ import 'activityHiveFunctions.dart';
 //import 'activityHiveBoxConst.dart';
 import 'chart.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'NavigatorPage.dart';
+import 'main.dart';
 
 double startTime = 0;
 double endTime = 0;
@@ -132,9 +132,7 @@ class _TodoListPageState extends State<TodoListPage> {
             )
             )
           );
-        
-          
-  }
+          }
           )
           )
         ]
@@ -154,9 +152,9 @@ List sort(List sList, double compatValue){
     for(int s = a + 1; s < sList.length; s++)
     {
       Object temp = 0;
-      double aValue = ((compatValue/sList[a]["priority"])-1).abs();
-      double sValue = ((compatValue/sList[s]["priority"])-1).abs();
-      if(sValue > aValue){
+      double aValue = ((compatValue - sList[a]["priority"])).abs();
+      double sValue = ((compatValue - sList[s]["priority"])).abs();
+      if(sValue < aValue){
         temp = sList[a];
         sList[a] = sList[s];
         sList[s] = temp;
