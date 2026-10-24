@@ -152,10 +152,11 @@ class InfoPopupRoute<T> extends PopupRoute<T> {
               color: Colors.white,
               ),
             child: 
-            Flexible(
-              child: SingleChildScrollView(
+            //Flexible(
+              SingleChildScrollView(
                 child: Column(
                   children: [
+                    //Expanded( child:
                     Text(
                       infoText,
                       style: TextStyle(
@@ -166,9 +167,10 @@ class InfoPopupRoute<T> extends PopupRoute<T> {
                       ),
                       softWrap: true,                     
                 ),
+                    //)
               ])
             )
-          )
+          //)
         )
       )
     );
