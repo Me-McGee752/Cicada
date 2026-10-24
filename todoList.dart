@@ -236,6 +236,7 @@ List todoListGenerator(){
               });
               skip = true;
               print("skip is being done");
+              timeTracker = percentToClaire(claireToPercent(startTime)+((11/6)*((timeTracker-claireToPercent(startTime) + 1/3 + (activity["duration"])/60)/(11/6)).floor()));
               }
               else{
                 print("something");
@@ -267,6 +268,7 @@ List todoListGenerator(){
               }
             }
             if (!skip){
+          if(activity["duration"] > 2){
           TodoListHiveFunctions.createActivity({
             "activity": activity["activity"],
             "priority": activity["priority"],
@@ -276,6 +278,7 @@ List todoListGenerator(){
           });
           timeTracker += activity["duration"]/60;
           // print("activList pre remove: $activList");
+          }
           activList.remove(activity);
           // print("activList post remove: $activList");
           //activList = [];
