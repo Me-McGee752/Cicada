@@ -4,7 +4,7 @@ import 'activityHiveFunctions.dart';
 //import 'activityHiveBoxConst.dart';
 import 'chart.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'NavigatorPage.dart';
+import 'main.dart';
 
 double startTime = 0;
 double endTime = 0;
@@ -117,7 +117,7 @@ class _TodoListPageState extends State<TodoListPage> {
               setState((){TodoListHiveFunctions.TodoListBox.delete(item["key"]);
               ActivityEditorHiveFunctions.activityBox.delete(item["activityKey"]);});
               getHiveData();
-              todoListGenerator();
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => NavigatorPage(currentIndex: 0)));
               setState((){});
             },
             key: Key(item["key"].toString()),
@@ -177,14 +177,14 @@ List todoListGenerator(){
   bool skip = false;
   double timeTracker = 0;
   //List compatability = [];
-  //print("startTime: $startTime");
-  // if(claireToPercent(DateTime.now().hour.toDouble()) + (DateTime.now().minute.toDouble()/100) > claireToPercent(startTime)){
-  //   timeTracker = DateTime.now().hour.toDouble() + DateTime.now().minute.toDouble()/60;
-  // }
-  // else
-  // {
+  // print("startTime: $startTime");
+  if(claireToPercent(DateTime.now().hour.toDouble()) + (DateTime.now().minute.toDouble()/100) > claireToPercent(startTime)){
+    timeTracker = DateTime.now().hour.toDouble() + DateTime.now().minute.toDouble()/60;
+  }
+  else
+  {
     timeTracker = claireToPercent(startTime);
-  // }
+  }
   
   //double timeTracker = claireToPercent(startTime); //time tracker is now a percent var
   // print("TodoListHiveFunction.TodoListBox pre delete:");
@@ -301,18 +301,18 @@ double timeToEnergy(double time){
   // for(int hour = 0; hour<24; hour++){
   //   if(CicadaDataHiveFunctions
   // }
-points = [
-  FlSpot(0,0),
-  FlSpot(1,0.5),
-  FlSpot(2,1),
-  FlSpot(5,8),
-  FlSpot(7,6),
-  FlSpot(10,10),     
-  FlSpot(13, 8),
-  FlSpot(14,7),
-  FlSpot(15, 6),
+// points = [
+//   FlSpot(0,0),
+//   FlSpot(1,0.5),
+//   FlSpot(2,1),
+//   FlSpot(5,8),
+//   FlSpot(7,6),
+//   FlSpot(10,10),     
+//   FlSpot(13, 8),
+//   FlSpot(14,7),
+//   FlSpot(15, 6),
 
-];
+// ];
 
   int lowx = 0;
   double lowy = 0;
