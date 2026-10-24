@@ -54,10 +54,9 @@ class _TodoListPageState extends State<TodoListPage> {
           backgroundColor: Colors.amber,
           foregroundColor: Colors.white,
         ),
-        body: 
-        Column(
-        children:     
-        [
+        body: SingleChildScrollView(
+        child: Column(
+        children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -133,12 +132,14 @@ class _TodoListPageState extends State<TodoListPage> {
             )
             )
           );
-
+        
           
   }
           )
           )
         ]
+          )
+        
         )
       )
     );
@@ -297,18 +298,18 @@ double timeToEnergy(double time){
   // for(int hour = 0; hour<24; hour++){
   //   if(CicadaDataHiveFunctions
   // }
-  // points = [
-  //   FlSpot(0,0),
-  //   FlSpot(1,0.5),
-  //   FlSpot(2,1),
-  //   FlSpot(5,8),
-  //   FlSpot(7,6),
-  //   FlSpot(10,10),     
-  //   FlSpot(13, 8),
-  //   FlSpot(14,7),
-  //   FlSpot(15, 6),
+points = [
+  FlSpot(0,0),
+  FlSpot(1,0.5),
+  FlSpot(2,1),
+  FlSpot(5,8),
+  FlSpot(7,6),
+  FlSpot(10,10),     
+  FlSpot(13, 8),
+  FlSpot(14,7),
+  FlSpot(15, 6),
 
-  // ];
+];
 
   int lowx = 0;
   double lowy = 0;
