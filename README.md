@@ -1,1 +1,1 @@
-To run Cicada Data, open the NavigatorPage.dart file
+To run Cicada Data, open the main.dart file
