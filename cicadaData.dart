@@ -4,7 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'cicadaDataHiveBoxConst.dart';
 import 'cicadaDataHiveFunctions.dart';
 import 'chart.dart';
-import 'NavigatorPage.dart';
+import 'main.dart';
 //import 'dart:developer' as developer;
 
 final timeSet = List.empty(growable: true);
@@ -74,22 +74,15 @@ class _CicadaDataScreenState extends State<CicadaDataScreen> {
           ),
           CicadaDataInputScreen(),
           IconButton(
-                icon: const Icon(Icons.check),
-                onPressed: (){
-                  print(averageGraph());
-                  print(averageGraph().contains(FlSpot(11, 5.4)));
-                  Navigator.pushReplacement(context, 
-                    MaterialPageRoute(builder: (BuildContext context) => 
-                    //super.widget
-                    NavigatorPage(currentIndex: 2)
-                    
-                    ),
-                  );
-                  CicadaDataHiveFunctions.createEnergyPoint({
-                    "energy": _currentDiscreteSliderValue,
-                    "time": DateTime.now().hour + (DateTime.now().minute/60),
-                  }
-                  );
+            icon: const Icon(Icons.check),
+            onPressed: (){
+              print(averageGraph());
+              print(averageGraph().contains(FlSpot(11, 5.4)));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => NavigatorPage(currentIndex: 2)));
+              CicadaDataHiveFunctions.createEnergyPoint({
+                "energy": _currentDiscreteSliderValue,
+                "time": DateTime.now().hour + (DateTime.now().minute/60),
+              });
                   // setState((){
                   //   ChartScreen();
                   // });
