@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:hive_flutter/hive_flutter.dart';
 import 'activityHiveFunctions.dart';
 import 'package:flutter/services.dart';
-import 'NavigatorPage.dart';
+import 'main.dart';
 //import 'scheduledActivity.dart';
 
 int dropdownvalue = 60;
@@ -17,6 +17,7 @@ class ActivityScreen extends StatefulWidget {
 class _ActivityScreenState extends State<ActivityScreen> {
   // Local Variable Where we save
   // the hive data of current context
+  
   double size = 0;
   List myHiveData = [];
   double _currentDiscreteSliderValue = 5;
